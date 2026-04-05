@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { instrumentLabel, label as getLabel } from "@/lib/labels";
 
 interface FlagFeedProps {
   flags: Array<{
@@ -119,7 +120,7 @@ export default function FlagFeed({ flags, sessions }: FlagFeedProps) {
             >
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-xs text-gray-400 uppercase tracking-wide">
-                  {flag.instrument ?? "Cross-instrument"}
+                  {getLabel(flag.instrument ?? "Cross-instrument", instrumentLabel)}
                 </span>
                 <span className="text-xs text-gray-400">
                   {getSessionLabel(flag.session_id)}

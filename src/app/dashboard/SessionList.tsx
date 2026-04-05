@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { instrumentLabel, orsItemLabel, label } from "@/lib/labels";
 
 interface SessionListProps {
   sessions: Array<{
@@ -112,7 +113,7 @@ export default function SessionList({
                 </span>
                 {orsScore && (
                   <span className="text-sm font-semibold text-gray-900">
-                    ORS {Number(orsScore.composite_score)}
+                    Wellbeing {Number(orsScore.composite_score)}
                   </span>
                 )}
                 {sessionFlags.length > 0 && (
@@ -146,7 +147,7 @@ export default function SessionList({
                   {orsResponses.length > 0 && (
                     <div>
                       <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
-                        ORS Breakdown
+                        Wellbeing Breakdown
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         {orsResponses.map((r) => (
@@ -154,8 +155,8 @@ export default function SessionList({
                             key={r.question_key}
                             className="flex justify-between"
                           >
-                            <span className="text-gray-600 capitalize">
-                              {r.question_key.replace("ors_", "")}
+                            <span className="text-gray-600">
+                              {label(r.question_key.replace("ors_", ""), orsItemLabel)}
                             </span>
                             <span className="font-medium text-gray-900">
                               {Number(r.value)}
@@ -170,7 +171,7 @@ export default function SessionList({
                   {srsScore && (
                     <div>
                       <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
-                        Alliance (SRS)
+                        Session Alliance
                       </div>
                       <span className="font-medium text-gray-900">
                         {Number(srsScore.composite_score)}/20
@@ -182,7 +183,7 @@ export default function SessionList({
                   {(bodySafety || suds || voc) && (
                     <div>
                       <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
-                        Somatic
+                        Body & Somatic
                       </div>
                       <div className="flex gap-4">
                         {bodySafety && (
@@ -195,7 +196,7 @@ export default function SessionList({
                         )}
                         {suds && (
                           <span className="text-gray-600">
-                            SUDS:{" "}
+                            Emotional Charge:{" "}
                             <span className="font-medium text-gray-900">
                               {Number(suds.value)}
                             </span>
@@ -203,7 +204,7 @@ export default function SessionList({
                         )}
                         {voc && (
                           <span className="text-gray-600">
-                            VOC:{" "}
+                            Body Belief:{" "}
                             <span className="font-medium text-gray-900">
                               {Number(voc.value)}
                             </span>

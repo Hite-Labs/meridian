@@ -139,10 +139,10 @@ export default function TrendChart({
                     </div>
                   )}
                   {data.ors > 0 && (
-                    <div className="text-gray-700">ORS: {data.ors}</div>
+                    <div className="text-gray-700">Session Wellbeing: {data.ors}</div>
                   )}
                   {data.who5 !== undefined && (
-                    <div className="text-gray-700">WHO-5: {data.who5}</div>
+                    <div className="text-gray-700">Monthly Wellbeing: {data.who5}</div>
                   )}
                   {data.flags.length > 0 && (
                     <div className="mt-1 pt-1 border-t border-gray-100">
@@ -165,7 +165,7 @@ export default function TrendChart({
                   )}
                   {data.isImprovement && (
                     <div className="text-green-600 text-xs mt-1 font-medium">
-                      Reliable improvement
+                      Meaningful improvement
                     </div>
                   )}
                 </div>
@@ -179,7 +179,7 @@ export default function TrendChart({
             stroke="#d1d5db"
             strokeDasharray="6 3"
             label={{
-              value: "Distress threshold",
+              value: "Wellbeing threshold",
               position: "insideTopRight",
               fill: "#9ca3af",
               fontSize: 11,
@@ -203,7 +203,7 @@ export default function TrendChart({
             strokeDasharray="6 3"
             dot={{ r: 4, fill: "#93c5fd" }}
             connectNulls={false}
-            name="WHO-5"
+            name="Monthly Wellbeing"
           />
 
           {/* ORS line (primary) */}
@@ -237,7 +237,7 @@ export default function TrendChart({
               );
             }}
             activeDot={{ r: 6 }}
-            name="ORS"
+            name="Session Wellbeing"
           />
         </LineChart>
       </ResponsiveContainer>
@@ -270,11 +270,11 @@ export default function TrendChart({
       <div className="flex items-center gap-6 mt-4 text-xs text-gray-500">
         <div className="flex items-center gap-1.5">
           <span className="w-4 h-0.5 bg-blue-600 inline-block" />
-          ORS Total
+          Session Wellbeing
         </div>
         <div className="flex items-center gap-1.5">
           <span className="w-4 h-0.5 bg-blue-300 inline-block border-dashed" style={{ borderTop: "2px dashed #93c5fd", height: 0 }} />
-          WHO-5
+          Monthly Wellbeing
         </div>
         <div className="flex items-center gap-1.5">
           <span className="w-3 h-3 bg-amber-100 rounded inline-block border border-amber-200" />
