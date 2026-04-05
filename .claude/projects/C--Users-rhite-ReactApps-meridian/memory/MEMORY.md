@@ -1,0 +1,3 @@
+- [Project Overview](project_overview.md) — Coaching progress tracker demo, Next.js + Supabase + Tailwind, deploying to Vercel
+- [User Profile](user_profile.md) — Russell, building wellness/coaching SaaS product, uses AI for spec refinement
+- [Demo Decisions](demo_decisions.md) — Session dates anchored to today, WHO-5 adapted for intake, plateau rule details
