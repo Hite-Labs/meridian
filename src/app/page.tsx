@@ -26,6 +26,12 @@ export default function Home() {
           >
             Practitioner Dashboard
           </Link>
+          <Link
+            href="/demo"
+            className="block w-full py-4 rounded-xl bg-gray-900 text-white font-medium hover:bg-gray-800 transition-colors"
+          >
+            Demo Scenarios
+          </Link>
         </div>
 
         <p className="text-xs text-gray-400 mt-8">

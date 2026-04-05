@@ -1,14 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DEMO_CLIENT_ID } from "@/lib/demo";
+import { useSearchParams } from "next/navigation";
+import { DEMO_SCENARIOS } from "@/lib/demo";
 import ClientHeader from "./ClientHeader";
 import PatternBanner from "./PatternBanner";
 import TrendChart from "./TrendChart";
 import SessionList from "./SessionList";
 import FlagFeed from "./FlagFeed";
 
+interface ClientInfo {
+  id: string;
+  name: string;
+  status: string;
+  modality: string;
+}
+
 interface DashboardData {
+  client: ClientInfo;
   flags: Array<{
     id: string;
     client_id: string;
@@ -56,17 +65,21 @@ interface DashboardData {
 }
 
 export default function DashboardPage() {
+  const searchParams = useSearchParams();
+  const clientId = searchParams.get("clientId") ?? DEMO_SCENARIOS[0].clientId;
+
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/flags?clientId=${DEMO_CLIENT_ID}`)
+    setLoading(true);
+    fetch(`/api/flags?clientId=${clientId}`)
       .then((res) => res.json())
       .then((d) => {
         setData(d);
         setLoading(false);
       });
-  }, []);
+  }, [clientId]);
 
   if (loading || !data) {
     return (
@@ -108,9 +121,9 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <ClientHeader
-          name="Sarah K."
-          status="active"
-          modality="subconscious"
+          name={data.client.name}
+          status={data.client.status}
+          modality={data.client.modality}
           sessionCount={data.sessions.length}
           startDate={data.sessions[0]?.session_date ?? ""}
         />

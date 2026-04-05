@@ -13,11 +13,17 @@ export async function GET(request: NextRequest) {
 
   // Fetch all data needed for cross-instrument analysis
   const [
+    { data: client },
     { data: scores },
     { data: responses },
     { data: sessions },
     { data: existingFlags },
   ] = await Promise.all([
+    supabase
+      .from("client")
+      .select("id, name, status, modality")
+      .eq("id", clientId)
+      .single(),
     supabase
       .from("score")
       .select("*")
@@ -42,6 +48,7 @@ export async function GET(request: NextRequest) {
 
   // Return all flags (seeded + computed) for the dashboard
   return NextResponse.json({
+    client: client ?? { id: clientId, name: "Unknown", status: "active", modality: "subconscious" },
     flags: existingFlags ?? [],
     scores: scores ?? [],
     responses: responses ?? [],
