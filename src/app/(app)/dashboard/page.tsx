@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { DEMO_SCENARIOS } from "@/lib/demo";
 import ClientHeader from "./ClientHeader";
@@ -65,6 +65,20 @@ interface DashboardData {
 }
 
 export default function DashboardPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex-1 flex items-center justify-center h-full">
+          <div className="text-gray-400">Loading dashboard...</div>
+        </div>
+      }
+    >
+      <DashboardInner />
+    </Suspense>
+  );
+}
+
+function DashboardInner() {
   const searchParams = useSearchParams();
   const clientId = searchParams.get("clientId") ?? DEMO_SCENARIOS[0].clientId;
 
