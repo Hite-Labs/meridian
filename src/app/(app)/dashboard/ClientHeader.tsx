@@ -22,8 +22,8 @@ export default function ClientHeader({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 px-6 py-4 flex flex-wrap items-center gap-4">
-      <h1 className="text-xl font-semibold text-gray-900">{name}</h1>
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-5 flex flex-wrap items-center gap-4">
+      <h1 className="text-xl font-semibold tracking-tight text-gray-900">{name}</h1>
       <span
         className={`px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${statusColors[status] ?? statusColors.active}`}
       >

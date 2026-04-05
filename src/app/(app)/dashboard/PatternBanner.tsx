@@ -43,7 +43,7 @@ export default function PatternBanner({
 
   return (
     <div
-      className={`mt-4 rounded-xl border-l-4 p-5 ${severityBorder[flag.severity] ?? severityBorder.info}`}
+      className={`mt-4 rounded-2xl border-l-4 p-5 ${severityBorder[flag.severity] ?? severityBorder.info}`}
     >
       <div className="flex items-center gap-2 mb-2">
         <span className="text-xs font-medium text-gray-500 uppercase tracking-wide bg-white/60 px-2 py-0.5 rounded">

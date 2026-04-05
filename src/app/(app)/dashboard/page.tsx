@@ -83,7 +83,7 @@ export default function DashboardPage() {
 
   if (loading || !data) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center h-full">
         <div className="text-gray-400">Loading dashboard...</div>
       </div>
     );
@@ -104,6 +104,26 @@ export default function DashboardPage() {
     })
     .sort((a, b) => a.sessionNumber - b.sessionNumber);
 
+  // ORS subscores per session (for breakdown view)
+  const orsSubscores = data.sessions.map((session) => {
+    const sessionOrs = data.responses.filter(
+      (r) =>
+        r.session_id === session.id &&
+        r.instrument === "ORS" &&
+        r.questionnaire_type === "session"
+    );
+    const get = (key: string) =>
+      Number(sessionOrs.find((r) => r.question_key === key)?.value ?? 0);
+    return {
+      sessionNumber: session.session_number,
+      sessionDate: session.session_date,
+      personal: get("ors_personal"),
+      relationships: get("ors_relationships"),
+      social: get("ors_social"),
+      overall: get("ors_overall"),
+    };
+  });
+
   const who5Scores = data.scores
     .filter((s) => s.instrument === "WHO5")
     .map((s) => ({
@@ -118,8 +138,8 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
         <ClientHeader
           name={data.client.name}
           status={data.client.status}
@@ -140,6 +160,7 @@ export default function DashboardPage() {
           <div className="lg:col-span-2 space-y-6">
             <TrendChart
               orsScores={orsScores}
+              orsSubscores={orsSubscores}
               who5Scores={who5Scores}
               flags={data.flags}
               sessions={data.sessions}
