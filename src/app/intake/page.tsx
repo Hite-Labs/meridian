@@ -28,6 +28,8 @@ export default function IntakePage() {
     <QuestionnaireFlow
       questions={allQuestions}
       onComplete={handleComplete}
+      title="Intake Questionnaire"
+      subtitle="Dr. Maya Chen"
       completionTitle="You're all set. Your practitioner has everything they need to support you."
       completionSubtext="See you at your first session."
     />

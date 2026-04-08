@@ -4,16 +4,17 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { DEMO_SCENARIOS } from "@/lib/demo";
 import ClientHeader from "./ClientHeader";
-import PatternBanner from "./PatternBanner";
 import TrendChart from "./TrendChart";
+import BreakdownPanel from "./BreakdownPanel";
+import FlagPanel from "./FlagPanel";
 import SessionList from "./SessionList";
-import FlagFeed from "./FlagFeed";
 
 interface ClientInfo {
   id: string;
   name: string;
   status: string;
   modality: string;
+  goal: string | null;
 }
 
 interface DashboardData {
@@ -60,6 +61,7 @@ interface DashboardData {
     session_number: number;
     session_date: string;
     notes: string | null;
+    next_steps: string | null;
     created_at: string;
   }>;
 }
@@ -146,10 +148,51 @@ function DashboardInner() {
       score: Number(s.composite_score),
     }));
 
-  // Find the cognitive-somatic gap pattern
-  const cogSomaticGap = data.flags.find(
-    (f) => f.rule_key === "cognitive_somatic_gap"
+  // --- Trend data: latest vs previous session ---
+  const latestSub = orsSubscores.length > 0 ? orsSubscores[orsSubscores.length - 1] : null;
+  const prevSub = orsSubscores.length >= 2 ? orsSubscores[orsSubscores.length - 2] : null;
+  const latestOrs = orsScores.length > 0 ? orsScores[orsScores.length - 1] : null;
+  const prevOrs = orsScores.length >= 2 ? orsScores[orsScores.length - 2] : null;
+
+  // Latest session for notes + body metrics
+  const latestSession = data.sessions.length > 0
+    ? [...data.sessions].sort((a, b) => b.session_number - a.session_number)[0]
+    : null;
+
+  const latestNotes = latestSession?.notes ?? null;
+  const latestNextSteps = latestSession?.next_steps ?? null;
+
+  // Body & somatic metrics for latest session
+  const bodyMetrics = latestSession ? {
+    bodySafety: Number(data.responses.find(
+      (r) => r.session_id === latestSession.id && r.question_key === "scaling_body_safety"
+    )?.value ?? null) || null,
+    suds: Number(data.responses.find(
+      (r) => r.session_id === latestSession.id && r.question_key === "suds"
+    )?.value ?? null) || null,
+    voc: Number(data.responses.find(
+      (r) => r.session_id === latestSession.id && r.question_key === "voc"
+    )?.value ?? null) || null,
+  } : null;
+
+  // Intake scores (for clients with no sessions yet)
+  const intakeWho5 = data.scores.find(
+    (s) => s.instrument === "WHO5" && s.questionnaire_type === "intake"
   );
+  const intakePhq4Anxiety = data.scores.find(
+    (s) => s.instrument === "PHQ4_anxiety" && s.questionnaire_type === "intake"
+  );
+  const intakePhq4Depression = data.scores.find(
+    (s) => s.instrument === "PHQ4_depression" && s.questionnaire_type === "intake"
+  );
+  const intakeScaling = data.responses.filter(
+    (r) => r.questionnaire_type === "intake" && r.instrument === "scaling"
+  );
+  const hasIntakeData = !!(intakeWho5 || intakePhq4Anxiety || intakeScaling.length > 0);
+  const hasSessions = data.sessions.length > 0;
+
+  // Show flag panel if there are any flags at all (concerns or history)
+  const hasFlagContent = data.flags.length > 0;
 
   return (
     <div>
@@ -158,49 +201,50 @@ function DashboardInner() {
           name={data.client.name}
           status={data.client.status}
           modality={data.client.modality}
+          goal={data.client.goal}
           sessionCount={data.sessions.length}
           startDate={data.sessions[0]?.session_date ?? ""}
         />
 
-        {cogSomaticGap && (
-          <PatternBanner
-            flag={cogSomaticGap}
+        <div className="space-y-6 mt-6">
+          {/* Full-width chart */}
+          <TrendChart
+            orsScores={orsScores}
+            orsSubscores={orsSubscores}
+            who5Scores={who5Scores}
+            flags={data.flags}
             sessions={data.sessions}
-            responses={data.responses}
           />
-        )}
 
-        <div className="lg:grid lg:grid-cols-3 lg:gap-6 mt-6">
-          <div className="lg:col-span-2 space-y-6">
-            <TrendChart
-              orsScores={orsScores}
-              orsSubscores={orsSubscores}
-              who5Scores={who5Scores}
-              flags={data.flags}
-              sessions={data.sessions}
+          {/* Breakdown + Flags side by side (flags conditional) */}
+          <div className={`grid gap-6 ${hasFlagContent ? "lg:grid-cols-2" : ""}`}>
+            <BreakdownPanel
+              latestSubscores={latestSub}
+              previousSubscores={prevSub}
+              latestComposite={latestOrs}
+              previousComposite={prevOrs}
+              latestNotes={latestNotes}
+              latestNextSteps={latestNextSteps}
+              bodyMetrics={bodyMetrics}
+              intakeData={!hasSessions && hasIntakeData ? {
+                who5: intakeWho5 ? Number(intakeWho5.composite_score) : null,
+                anxiety: intakePhq4Anxiety ? Number(intakePhq4Anxiety.composite_score) : null,
+                depression: intakePhq4Depression ? Number(intakePhq4Depression.composite_score) : null,
+                scaling: Object.fromEntries(intakeScaling.map((r) => [r.question_key, Number(r.value)])),
+              } : null}
             />
-            <div className="lg:hidden">
-              <SessionList
-                sessions={data.sessions}
-                scores={data.scores}
-                responses={data.responses}
-                flags={data.flags}
-              />
-            </div>
+            {hasFlagContent && (
+              <FlagPanel flags={data.flags} sessions={data.sessions} />
+            )}
           </div>
-          <div className="hidden lg:block space-y-6">
-            <SessionList
-              sessions={data.sessions}
-              scores={data.scores}
-              responses={data.responses}
-              flags={data.flags}
-            />
-            <FlagFeed flags={data.flags} sessions={data.sessions} />
-          </div>
-        </div>
 
-        <div className="lg:hidden mt-6">
-          <FlagFeed flags={data.flags} sessions={data.sessions} />
+          {/* Session history */}
+          <SessionList
+            sessions={data.sessions}
+            scores={data.scores}
+            responses={data.responses}
+            flags={data.flags}
+          />
         </div>
       </div>
     </div>

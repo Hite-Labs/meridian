@@ -26,6 +26,8 @@ export default function CheckInPage() {
     <QuestionnaireFlow
       questions={checkInQuestions}
       onComplete={handleComplete}
+      title="Session Check-In"
+      subtitle="Dr. Maya Chen"
       completionTitle="Thank you — your responses have been recorded."
       completionSubtext="Your practitioner will review these before your next session."
     />

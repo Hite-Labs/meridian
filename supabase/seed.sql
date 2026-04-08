@@ -19,29 +19,46 @@ VALUES ('a1b2c3d4-0000-0000-0000-000000000001', 'Dr. Maya Chen', 'maya@demo.com'
 -- ============================================================
 -- Client
 -- ============================================================
-INSERT INTO client (id, practitioner_id, name, email, modality, status)
+INSERT INTO client (id, practitioner_id, name, email, modality, status, goal)
 VALUES (
   'b2c3d4e5-0000-0000-0000-000000000001',
   'a1b2c3d4-0000-0000-0000-000000000001',
   'Sarah K.',
   'sarah@demo.com',
   'subconscious',
-  'active'
+  'active',
+  'Navigate a career transition with confidence'
 );
 
 -- ============================================================
 -- Sessions (8 sessions over ~10 weeks, session 8 = 7 days ago)
 -- Week 10 = 7 days ago → Week 1 = 70 days ago
 -- ============================================================
-INSERT INTO session (id, client_id, practitioner_id, session_number, session_date, notes) VALUES
-  ('c0000001-0000-0000-0000-000000000001', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 1, CURRENT_DATE - INTERVAL '70 days', 'First session. Sarah presented with anxiety around a career transition.'),
-  ('c0000001-0000-0000-0000-000000000002', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 2, CURRENT_DATE - INTERVAL '63 days', 'Explored the roots of the anxiety. Sarah engaged well.'),
-  ('c0000001-0000-0000-0000-000000000003', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 3, CURRENT_DATE - INTERVAL '56 days', 'Continued somatic work. Identified a core limiting belief.'),
-  ('c0000001-0000-0000-0000-000000000004', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 4, CURRENT_DATE - INTERVAL '49 days', 'Breakthrough session. Significant emotional release and reframe.'),
-  ('c0000001-0000-0000-0000-000000000005', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 5, CURRENT_DATE - INTERVAL '35 days', 'Integration work. Sarah reports feeling lighter.'),
-  ('c0000001-0000-0000-0000-000000000006', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 6, CURRENT_DATE - INTERVAL '28 days', 'Consolidated gains. Worked on future self.'),
-  ('c0000001-0000-0000-0000-000000000007', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 7, CURRENT_DATE - INTERVAL '21 days', 'Sarah is showing real momentum.'),
-  ('c0000001-0000-0000-0000-000000000008', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 8, CURRENT_DATE - INTERVAL '7 days', 'Strong session. Sarah is thriving.');
+INSERT INTO session (id, client_id, practitioner_id, session_number, session_date, notes, next_steps) VALUES
+  ('c0000001-0000-0000-0000-000000000001', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 1, CURRENT_DATE - INTERVAL '70 days', 'First session. Sarah presented with anxiety around a career transition. High emotional charge around the topic of leaving her current role.', 'Practice 5-min body scan before bed each night
+Journal about what "safety" feels like in the body
+Notice moments of ease throughout the day'),
+  ('c0000001-0000-0000-0000-000000000002', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 2, CURRENT_DATE - INTERVAL '63 days', 'Explored the roots of the anxiety. Sarah connected it to a childhood pattern of needing to "get it right." Engaged well with somatic exploration.', 'Continue body scan practice
+When noticing the "get it right" pattern, pause and take 3 breaths
+Write down one thing that went well each day'),
+  ('c0000001-0000-0000-0000-000000000003', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 3, CURRENT_DATE - INTERVAL '56 days', 'Continued somatic work. Identified core limiting belief: "I''m not ready." Body holding tension in shoulders and jaw.', 'Practice shoulder release exercise twice daily
+Repeat reframe: "I am learning and that is enough"
+Notice when jaw clenches and soften intentionally'),
+  ('c0000001-0000-0000-0000-000000000004', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 4, CURRENT_DATE - INTERVAL '49 days', 'Breakthrough session. Significant emotional release around the limiting belief. Sarah reframed to "I am already becoming." Noticeable shift in posture and breathing.', 'Anchor the new belief with morning visualization (2 min)
+Share one career-related idea with a trusted friend this week
+Continue shoulder release practice'),
+  ('c0000001-0000-0000-0000-000000000005', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 5, CURRENT_DATE - INTERVAL '35 days', 'Integration work. Sarah reports feeling lighter and more confident at work. Relationship wellbeing also improving as she communicates more openly.', 'Have one honest conversation about career plans this week
+Notice and name positive emotions when they arise
+Continue morning visualization'),
+  ('c0000001-0000-0000-0000-000000000006', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 6, CURRENT_DATE - INTERVAL '28 days', 'Consolidated gains. Worked on future self visualization. Sarah described a clear, embodied vision of where she''s heading. Social engagement increasing.', 'Write a letter from future self to current self
+Take one small action toward the career vision
+Celebrate one win each day'),
+  ('c0000001-0000-0000-0000-000000000007', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 7, CURRENT_DATE - INTERVAL '21 days', 'Sarah is showing real momentum. Applied for a new role and felt grounded through the process. Body safety score high. Emotional charge minimal.', 'Prepare for interview with embodied rehearsal
+Continue daily celebration practice
+Notice how the body responds to positive outcomes'),
+  ('c0000001-0000-0000-0000-000000000008', 'b2c3d4e5-0000-0000-0000-000000000001', 'a1b2c3d4-0000-0000-0000-000000000001', 8, CURRENT_DATE - INTERVAL '7 days', 'Strong session. Sarah is thriving. Got the job offer and negotiated confidently. All wellbeing scores at personal highs. Ready to discuss graduation timeline.', 'Reflect on the full journey — what shifted and when
+Identify personal practices to continue independently
+Think about what support looks like going forward');
 
 -- ============================================================
 -- Intake Responses (session_id = NULL for intake)
@@ -249,51 +266,27 @@ INSERT INTO score (client_id, session_id, questionnaire_type, instrument, compos
 -- Flags
 -- ============================================================
 INSERT INTO flag (client_id, session_id, flag_type, instrument, severity, rule_key, message, suggested_language, acknowledged, acknowledged_at, acknowledged_by) VALUES
-  -- who5_concern at intake (WHO-5 = 44 < 50)
+  -- Intake: gentle nudge about low energy (acknowledged after session 2)
   ('b2c3d4e5-0000-0000-0000-000000000001', NULL, 'threshold', 'WHO5', 'amber', 'who5_concern',
-   'Client''s wellbeing score suggests possible emotional difficulties. Consider checking in about their support systems.',
-   'I noticed some of your responses suggest things have been a bit tough lately. I want you to know that''s completely normal, and we''ll work through this together at your pace.',
-   false, NULL, NULL),
-
-  -- phq4_anxiety at intake (anxiety subscore = 3 >= 3) — acknowledged at session 2
-  ('b2c3d4e5-0000-0000-0000-000000000001', NULL, 'threshold', 'PHQ4', 'amber', 'phq4_anxiety',
-   'Client''s responses suggest elevated anxiety. Consider opening a conversation about stress and worry.',
-   'I''d love to spend a little time today exploring what''s been weighing on you. There''s no pressure — we''ll go at whatever pace feels right.',
+   'Energy and mood are running a bit low. Worth exploring what''s weighing on her.',
+   'I noticed some of your responses suggest things have been a bit tough lately. That''s completely normal, and we''ll work through this together at your pace.',
    true, CURRENT_DATE - INTERVAL '63 days', 'Dr. Maya Chen'),
 
-  -- ors_distress sessions 1-3 (all < 25)
-  ('b2c3d4e5-0000-0000-0000-000000000001', 'c0000001-0000-0000-0000-000000000001', 'threshold', 'ORS', 'amber', 'ors_distress',
-   'Client is in the distress range. Worth checking in at the start of next session.',
-   NULL, false, NULL, NULL),
-  ('b2c3d4e5-0000-0000-0000-000000000001', 'c0000001-0000-0000-0000-000000000002', 'threshold', 'ORS', 'amber', 'ors_distress',
-   'Client is in the distress range. Worth checking in at the start of next session.',
-   NULL, false, NULL, NULL),
-  ('b2c3d4e5-0000-0000-0000-000000000001', 'c0000001-0000-0000-0000-000000000003', 'threshold', 'ORS', 'amber', 'ors_distress',
-   'Client is in the distress range. Worth checking in at the start of next session.',
-   NULL, false, NULL, NULL),
-
-  -- ors_plateau at session 3 (19→21→22, all changes < 3, all < 25)
-  ('b2c3d4e5-0000-0000-0000-000000000001', 'c0000001-0000-0000-0000-000000000003', 'trend', 'ORS', 'amber', 'ors_plateau',
-   'Progress appears to have stalled below the wellbeing threshold. Consider reviewing the coaching approach.',
-   'I want to check in about how you feel things are going. Sometimes it helps to try a different angle — would you be open to exploring that?',
-   false, NULL, NULL),
-
-  -- ors_improvement at session 4 (ORS jumped from 22 to 28 = +6 >= 5)
-  ('b2c3d4e5-0000-0000-0000-000000000001', 'c0000001-0000-0000-0000-000000000004', 'trend', 'ORS', 'green', 'ors_improvement',
-   'Reliable improvement this session.',
-   NULL, false, NULL, NULL),
-
-  -- cognitive_somatic_gap at session 3 (goal confidence from intake scaling_motivation=8 >= 8, body safety=4 but wait — spec says body_safety <= 3)
-  -- At session 3: body_safety = 4, but at session 1 body_safety = 3. The cross-instrument flag checks across data.
-  -- Using session 3 as spec indicates, with scaling_motivation=8 from intake and body_safety still low at 4
+  -- Session 3: cognitive-somatic gap (the interesting coaching insight)
   ('b2c3d4e5-0000-0000-0000-000000000001', 'c0000001-0000-0000-0000-000000000003', 'cross_instrument', NULL, 'amber', 'cognitive_somatic_gap',
-   'Cognitive-somatic gap: client is mentally ready but body safety is low. Somatic work may be the unlocking mechanism.',
+   'Sarah is mentally ready but her body isn''t there yet. Somatic work may be the unlocking mechanism.',
    'I notice you''re really clear on what you want to achieve, and that''s great. I''d like to also pay attention to what your body is telling us — sometimes that''s where the real shift happens.',
-   false, NULL, NULL),
+   true, CURRENT_DATE - INTERVAL '49 days', 'Dr. Maya Chen'),
 
-  -- who5_improvement at monthly (WHO-5 went from 44 to 64 = +20 >= 10)
-  ('b2c3d4e5-0000-0000-0000-000000000001', 'c0000001-0000-0000-0000-000000000005', 'trend', 'WHO5', 'green', 'who5_improvement',
-   'Client''s wellbeing has improved significantly since last month.',
+  -- Session 3: plateau (acknowledged after breakthrough in session 4)
+  ('b2c3d4e5-0000-0000-0000-000000000001', 'c0000001-0000-0000-0000-000000000003', 'trend', 'ORS', 'amber', 'ors_plateau',
+   'Wellbeing scores haven''t shifted much over the last few sessions. Might be time to try a different angle.',
+   'I want to check in about how you feel things are going. Sometimes it helps to try a different approach — would you be open to exploring that?',
+   true, CURRENT_DATE - INTERVAL '49 days', 'Dr. Maya Chen'),
+
+  -- Session 4: big jump after breakthrough
+  ('b2c3d4e5-0000-0000-0000-000000000001', 'c0000001-0000-0000-0000-000000000004', 'trend', 'ORS', 'green', 'ors_improvement',
+   'Nice jump this session — something clicked.',
    NULL, false, NULL, NULL);
 
 -- ############################################################
@@ -301,30 +294,31 @@ INSERT INTO flag (client_id, session_id, flag_type, instrument, severity, rule_k
 -- Just completed intake, no sessions yet
 -- ############################################################
 
-INSERT INTO client (id, practitioner_id, name, email, modality, status)
+INSERT INTO client (id, practitioner_id, name, email, modality, status, goal)
 VALUES (
   'b2c3d4e5-0000-0000-0000-000000000002',
   'a1b2c3d4-0000-0000-0000-000000000001',
   'Alex R.',
   'alex@demo.com',
   'subconscious',
-  'active'
+  'active',
+  'Quit smoking and build healthier habits'
 );
 
--- Intake WHO-5 responses (raw 0-5 scale, total = 5 → score = 5*4 = 20)
+-- Intake WHO-5 responses (raw 0-5 scale, total = 10 → score = 10*4 = 40)
 INSERT INTO response (client_id, session_id, questionnaire_type, instrument, question_key, question_text, value) VALUES
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'WHO5', 'who5_q1', 'I have felt cheerful and in good spirits.', 1),
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'WHO5', 'who5_q2', 'I have felt calm and relaxed.', 1),
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'WHO5', 'who5_q3', 'I have felt active and vigorous.', 1),
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'WHO5', 'who5_q4', 'I woke up feeling fresh and rested.', 1),
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'WHO5', 'who5_q5', 'My daily life has been filled with things that interest me.', 1);
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'WHO5', 'who5_q1', 'I have felt cheerful and in good spirits.', 2),
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'WHO5', 'who5_q2', 'I have felt calm and relaxed.', 2),
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'WHO5', 'who5_q3', 'I have felt active and vigorous.', 2),
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'WHO5', 'who5_q4', 'I woke up feeling fresh and rested.', 2),
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'WHO5', 'who5_q5', 'My daily life has been filled with things that interest me.', 2);
 
--- Intake PHQ-4 responses (anxiety=6 → q1=3+q2=3, depression=3 → q3=2+q4=1)
+-- Intake PHQ-4 responses (anxiety=2 → q1=1+q2=1, depression=1 → q3=1+q4=0)
 INSERT INTO response (client_id, session_id, questionnaire_type, instrument, question_key, question_text, value) VALUES
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4', 'phq4_q1', 'Feeling nervous, anxious, or on edge?', 3),
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4', 'phq4_q2', 'Not being able to stop or control worrying?', 3),
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4', 'phq4_q3', 'Feeling down, depressed, or hopeless?', 2),
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4', 'phq4_q4', 'Little interest or pleasure in doing things?', 1);
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4', 'phq4_q1', 'Feeling nervous, anxious, or on edge?', 1),
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4', 'phq4_q2', 'Not being able to stop or control worrying?', 1),
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4', 'phq4_q3', 'Feeling down, depressed, or hopeless?', 1),
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4', 'phq4_q4', 'Little interest or pleasure in doing things?', 0);
 
 -- Intake scaling responses
 INSERT INTO response (client_id, session_id, questionnaire_type, instrument, question_key, question_text, value) VALUES
@@ -336,29 +330,16 @@ INSERT INTO response (client_id, session_id, questionnaire_type, instrument, que
 
 -- Alex R. scores
 INSERT INTO score (client_id, session_id, questionnaire_type, instrument, composite_score) VALUES
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'WHO5', 20),           -- (1+1+1+1+1)*4 = 20
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4_anxiety', 6),     -- 3+3 = 6
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4_depression', 3),  -- 2+1 = 3
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4_total', 9);       -- 3+3+2+1 = 9
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'WHO5', 40),           -- (2+2+2+2+2)*4 = 40
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4_anxiety', 2),     -- 1+1 = 2
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4_depression', 1),  -- 1+0 = 1
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4_total', 3);       -- 1+1+1+0 = 3
 
--- Alex R. flags
+-- Alex R. flags (1 gentle intake nudge — typical new coaching client)
 INSERT INTO flag (client_id, session_id, flag_type, instrument, severity, rule_key, message, suggested_language, acknowledged, acknowledged_at, acknowledged_by) VALUES
-  -- who5_critical: WHO-5 = 20 < 28
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'threshold', 'WHO5', 'red', 'who5_critical',
-   'Client''s wellbeing score is critically low. Consider screening for depression and ensuring adequate support is in place.',
-   'I can see things have been really hard lately. I want to make sure you have the support you need — would it be okay to talk about that?',
-   false, NULL, NULL),
-
-  -- phq4_anxiety_high: anxiety = 6 (max)
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'threshold', 'PHQ4', 'red', 'phq4_anxiety_high',
-   'Client''s anxiety screening is at the maximum level. Consider discussing anxiety management strategies and whether additional support is needed.',
-   'Your responses suggest you''ve been experiencing a lot of anxiety. That''s important information — let''s make sure we address this together.',
-   false, NULL, NULL),
-
-  -- phq4_depression: depression = 3
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'threshold', 'PHQ4', 'amber', 'phq4_depression',
-   'Client''s depression screening is elevated. Worth monitoring and opening a conversation.',
-   'I also noticed some signs of low mood in your responses. How are you feeling about that?',
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'threshold', 'WHO5', 'amber', 'who5_concern',
+   'Energy is a bit low coming in. Good to keep an eye on this as coaching begins.',
+   'I noticed your energy and mood have been running a little low lately. That''s really common when starting something new — let''s keep an eye on how that shifts.',
    false, NULL, NULL);
 
 
@@ -367,23 +348,34 @@ INSERT INTO flag (client_id, session_id, flag_type, instrument, severity, rule_k
 -- 5 sessions, ORS flat below 25, cognitive-somatic gap
 -- ############################################################
 
-INSERT INTO client (id, practitioner_id, name, email, modality, status)
+INSERT INTO client (id, practitioner_id, name, email, modality, status, goal)
 VALUES (
   'b2c3d4e5-0000-0000-0000-000000000003',
   'a1b2c3d4-0000-0000-0000-000000000001',
   'Jordan M.',
   'jordan@demo.com',
   'subconscious',
-  'active'
+  'active',
+  'Recover from burnout and find sustainable balance'
 );
 
 -- Jordan's 5 sessions over ~5 weeks, session 5 = 7 days ago
-INSERT INTO session (id, client_id, practitioner_id, session_number, session_date, notes) VALUES
-  ('c0000003-0000-0000-0000-000000000001', 'b2c3d4e5-0000-0000-0000-000000000003', 'a1b2c3d4-0000-0000-0000-000000000001', 1, CURRENT_DATE - INTERVAL '35 days', 'First session. Jordan presented with chronic stress and burnout.'),
-  ('c0000003-0000-0000-0000-000000000002', 'b2c3d4e5-0000-0000-0000-000000000003', 'a1b2c3d4-0000-0000-0000-000000000001', 2, CURRENT_DATE - INTERVAL '28 days', 'Explored stress patterns. Jordan is very articulate but body awareness is limited.'),
-  ('c0000003-0000-0000-0000-000000000003', 'b2c3d4e5-0000-0000-0000-000000000003', 'a1b2c3d4-0000-0000-0000-000000000001', 3, CURRENT_DATE - INTERVAL '21 days', 'Attempted somatic work. Jordan reports understanding intellectually but not feeling shift.'),
-  ('c0000003-0000-0000-0000-000000000004', 'b2c3d4e5-0000-0000-0000-000000000003', 'a1b2c3d4-0000-0000-0000-000000000001', 4, CURRENT_DATE - INTERVAL '14 days', 'Continued approach. Jordan is engaged but scores not moving.'),
-  ('c0000003-0000-0000-0000-000000000005', 'b2c3d4e5-0000-0000-0000-000000000003', 'a1b2c3d4-0000-0000-0000-000000000001', 5, CURRENT_DATE - INTERVAL '7 days', 'Same pattern. Consider changing approach — conscious modality might unlock progress.');
+INSERT INTO session (id, client_id, practitioner_id, session_number, session_date, notes, next_steps) VALUES
+  ('c0000003-0000-0000-0000-000000000001', 'b2c3d4e5-0000-0000-0000-000000000003', 'a1b2c3d4-0000-0000-0000-000000000001', 1, CURRENT_DATE - INTERVAL '35 days', 'First session. Jordan presented with chronic stress and burnout. Very cerebral — defaults to analyzing rather than feeling.', 'Try 3 minutes of box breathing before sleep
+Notice physical stress signals during the workday
+Reduce caffeine after 2pm'),
+  ('c0000003-0000-0000-0000-000000000002', 'b2c3d4e5-0000-0000-0000-000000000003', 'a1b2c3d4-0000-0000-0000-000000000001', 2, CURRENT_DATE - INTERVAL '28 days', 'Explored stress patterns. Jordan is very articulate but body awareness is limited. Tension held in neck and upper back.', 'Practice neck release stretches twice daily
+Set 3 phone reminders to check in with body
+Journal about what "rest" means'),
+  ('c0000003-0000-0000-0000-000000000003', 'b2c3d4e5-0000-0000-0000-000000000003', 'a1b2c3d4-0000-0000-0000-000000000001', 3, CURRENT_DATE - INTERVAL '21 days', 'Attempted somatic work. Jordan reports understanding intellectually but not feeling shift. May need to try a different modality.', 'Continue body check-ins
+Try walking without headphones once this week
+Write down one feeling per day (not a thought — a feeling)'),
+  ('c0000003-0000-0000-0000-000000000004', 'b2c3d4e5-0000-0000-0000-000000000003', 'a1b2c3d4-0000-0000-0000-000000000001', 4, CURRENT_DATE - INTERVAL '14 days', 'Continued approach. Jordan is engaged but scores not moving. Discussed whether a conscious coaching approach might resonate more.', 'Research one conscious coaching technique that interests you
+Continue walking practice
+Reflect on what "progress" looks like for you'),
+  ('c0000003-0000-0000-0000-000000000005', 'b2c3d4e5-0000-0000-0000-000000000003', 'a1b2c3d4-0000-0000-0000-000000000001', 5, CURRENT_DATE - INTERVAL '7 days', 'Same pattern. Consider changing approach — conscious modality might unlock progress. Jordan is willing to try.', 'Prepare questions for next session about conscious coaching approach
+Continue daily body check-ins
+Identify one area where you want a concrete plan');
 
 -- Jordan intake: WHO-5 responses (raw sum = 10 → score = 10*4 = 40)
 INSERT INTO response (client_id, session_id, questionnaire_type, instrument, question_key, question_text, value) VALUES
@@ -505,55 +497,18 @@ INSERT INTO score (client_id, session_id, questionnaire_type, instrument, compos
   ('b2c3d4e5-0000-0000-0000-000000000003', 'c0000003-0000-0000-0000-000000000004', 'session', 'SRS', 17),
   ('b2c3d4e5-0000-0000-0000-000000000003', 'c0000003-0000-0000-0000-000000000005', 'session', 'SRS', 16);
 
--- Jordan flags
+-- Jordan flags (just 2 — intake nudge acknowledged, plus one plateau at session 5)
 INSERT INTO flag (client_id, session_id, flag_type, instrument, severity, rule_key, message, suggested_language, acknowledged, acknowledged_at, acknowledged_by) VALUES
-  -- who5_concern at intake (WHO-5 = 40 < 50)
+  -- Intake: gentle nudge, acknowledged after session 1
   ('b2c3d4e5-0000-0000-0000-000000000003', NULL, 'threshold', 'WHO5', 'amber', 'who5_concern',
-   'Client''s wellbeing score suggests possible emotional difficulties. Consider checking in about their support systems.',
-   'I noticed some of your responses suggest things have been a bit tough lately. I want you to know that''s completely normal, and we''ll work through this together at your pace.',
-   false, NULL, NULL),
+   'Stress levels are running high coming in. Jordan is motivated but burned out — worth pacing the work.',
+   'I can see you''ve been carrying a lot lately. Let''s make sure we go at a pace that actually helps rather than adds to the load.',
+   true, CURRENT_DATE - INTERVAL '28 days', 'Dr. Maya Chen'),
 
-  -- phq4_anxiety at intake (anxiety = 4 >= 3)
-  ('b2c3d4e5-0000-0000-0000-000000000003', NULL, 'threshold', 'PHQ4', 'amber', 'phq4_anxiety',
-   'Client''s responses suggest elevated anxiety. Consider opening a conversation about stress and worry.',
-   'I''d love to spend a little time today exploring what''s been weighing on you. There''s no pressure — we''ll go at whatever pace feels right.',
-   false, NULL, NULL),
-
-  -- ors_distress on all 5 sessions (all < 25)
-  ('b2c3d4e5-0000-0000-0000-000000000003', 'c0000003-0000-0000-0000-000000000001', 'threshold', 'ORS', 'amber', 'ors_distress',
-   'Client is in the distress range. Worth checking in at the start of next session.',
-   NULL, false, NULL, NULL),
-  ('b2c3d4e5-0000-0000-0000-000000000003', 'c0000003-0000-0000-0000-000000000002', 'threshold', 'ORS', 'amber', 'ors_distress',
-   'Client is in the distress range. Worth checking in at the start of next session.',
-   NULL, false, NULL, NULL),
-  ('b2c3d4e5-0000-0000-0000-000000000003', 'c0000003-0000-0000-0000-000000000003', 'threshold', 'ORS', 'amber', 'ors_distress',
-   'Client is in the distress range. Worth checking in at the start of next session.',
-   NULL, false, NULL, NULL),
-  ('b2c3d4e5-0000-0000-0000-000000000003', 'c0000003-0000-0000-0000-000000000004', 'threshold', 'ORS', 'amber', 'ors_distress',
-   'Client is in the distress range. Worth checking in at the start of next session.',
-   NULL, false, NULL, NULL),
-  ('b2c3d4e5-0000-0000-0000-000000000003', 'c0000003-0000-0000-0000-000000000005', 'threshold', 'ORS', 'amber', 'ors_distress',
-   'Client is in the distress range. Worth checking in at the start of next session.',
-   NULL, false, NULL, NULL),
-
-  -- ors_plateau on sessions 3, 4, 5 (3+ sessions with all <25, all changes <3)
-  ('b2c3d4e5-0000-0000-0000-000000000003', 'c0000003-0000-0000-0000-000000000003', 'trend', 'ORS', 'amber', 'ors_plateau',
-   'Progress appears to have stalled below the wellbeing threshold. Consider reviewing the coaching approach.',
-   'I want to check in about how you feel things are going. Sometimes it helps to try a different angle — would you be open to exploring that?',
-   false, NULL, NULL),
-  ('b2c3d4e5-0000-0000-0000-000000000003', 'c0000003-0000-0000-0000-000000000004', 'trend', 'ORS', 'amber', 'ors_plateau',
-   'Progress appears to have stalled below the wellbeing threshold. Consider reviewing the coaching approach.',
-   'I want to check in about how you feel things are going. Sometimes it helps to try a different angle — would you be open to exploring that?',
-   false, NULL, NULL),
+  -- Session 5: plateau — the actionable one
   ('b2c3d4e5-0000-0000-0000-000000000003', 'c0000003-0000-0000-0000-000000000005', 'trend', 'ORS', 'amber', 'ors_plateau',
-   'Progress appears to have stalled below the wellbeing threshold. Consider reviewing the coaching approach.',
-   'I want to check in about how you feel things are going. Sometimes it helps to try a different angle — would you be open to exploring that?',
-   false, NULL, NULL),
-
-  -- cognitive_somatic_gap (motivation=9, body_safety stuck at 2-3)
-  ('b2c3d4e5-0000-0000-0000-000000000003', 'c0000003-0000-0000-0000-000000000003', 'cross_instrument', NULL, 'amber', 'cognitive_somatic_gap',
-   'Cognitive-somatic gap: client is mentally ready but body safety is low. Somatic work may be the unlocking mechanism.',
-   'I notice you''re really clear on what you want to achieve, and that''s great. I''d like to also pay attention to what your body is telling us — sometimes that''s where the real shift happens.',
+   'Scores haven''t shifted much over 5 sessions. The somatic approach may not be landing — worth trying a different angle.',
+   'I want to check in about how you feel things are going. Sometimes a different approach can unlock things — would you be open to trying something new?',
    false, NULL, NULL);
 
 
@@ -562,28 +517,49 @@ INSERT INTO flag (client_id, session_id, flag_type, instrument, severity, rule_k
 -- 10 sessions over ~5 months, steady improvement
 -- ############################################################
 
-INSERT INTO client (id, practitioner_id, name, email, modality, status)
+INSERT INTO client (id, practitioner_id, name, email, modality, status, goal)
 VALUES (
   'b2c3d4e5-0000-0000-0000-000000000004',
   'a1b2c3d4-0000-0000-0000-000000000001',
   'Priya L.',
   'priya@demo.com',
   'subconscious',
-  'active'
+  'active',
+  'Overcome self-doubt and step into leadership'
 );
 
 -- Priya's 10 sessions over ~5 months, session 10 = 7 days ago
-INSERT INTO session (id, client_id, practitioner_id, session_number, session_date, notes) VALUES
-  ('c0000004-0000-0000-0000-000000000001', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 1,  CURRENT_DATE - INTERVAL '150 days', 'First session. Priya presented with self-doubt and career indecision.'),
-  ('c0000004-0000-0000-0000-000000000002', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 2,  CURRENT_DATE - INTERVAL '135 days', 'Explored roots of self-doubt. Good rapport established.'),
-  ('c0000004-0000-0000-0000-000000000003', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 3,  CURRENT_DATE - INTERVAL '120 days', 'Somatic work around core belief. Priya beginning to shift.'),
-  ('c0000004-0000-0000-0000-000000000004', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 4,  CURRENT_DATE - INTERVAL '105 days', 'Strong session. Priya reports feeling more grounded.'),
-  ('c0000004-0000-0000-0000-000000000005', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 5,  CURRENT_DATE - INTERVAL '90 days', 'Continued integration. Confidence growing.'),
-  ('c0000004-0000-0000-0000-000000000006', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 6,  CURRENT_DATE - INTERVAL '75 days', 'Working on future self. Priya is thriving.'),
-  ('c0000004-0000-0000-0000-000000000007', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 7,  CURRENT_DATE - INTERVAL '60 days', 'Consolidating gains. Priya reports major life decisions with confidence.'),
-  ('c0000004-0000-0000-0000-000000000008', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 8,  CURRENT_DATE - INTERVAL '45 days', 'Maintenance session. All indicators positive.'),
-  ('c0000004-0000-0000-0000-000000000009', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 9,  CURRENT_DATE - INTERVAL '21 days', 'Strong session. Priya is self-sustaining.'),
-  ('c0000004-0000-0000-0000-000000000010', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 10, CURRENT_DATE - INTERVAL '7 days', 'Final check-in. All gains maintained. Ready for graduation.');
+INSERT INTO session (id, client_id, practitioner_id, session_number, session_date, notes, next_steps) VALUES
+  ('c0000004-0000-0000-0000-000000000001', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 1,  CURRENT_DATE - INTERVAL '150 days', 'First session. Priya presented with self-doubt and career indecision. Strong intellectual awareness but disconnected from body signals.', 'Practice grounding exercise each morning (feet on floor, 5 breaths)
+Write down 3 things you did well today before bed
+Notice self-critical thoughts without engaging'),
+  ('c0000004-0000-0000-0000-000000000002', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 2,  CURRENT_DATE - INTERVAL '135 days', 'Explored roots of self-doubt. Connected to family expectations around achievement. Good rapport established.', 'Continue grounding practice
+Journal about family messages around success
+Ask: "What would I do if I trusted myself?"'),
+  ('c0000004-0000-0000-0000-000000000003', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 3,  CURRENT_DATE - INTERVAL '120 days', 'Somatic work around core belief: "I need permission." Priya beginning to shift — noticed warmth in chest during reframe.', 'Practice the "permission" reframe when self-doubt arises
+Continue morning grounding
+Share one opinion without qualifying it this week'),
+  ('c0000004-0000-0000-0000-000000000004', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 4,  CURRENT_DATE - INTERVAL '105 days', 'Strong session. Priya reports feeling more grounded at work. Spoke up in a meeting and it went well.', 'Seek one opportunity to lead a conversation this week
+Continue reframe practice
+Notice body sensations when feeling confident'),
+  ('c0000004-0000-0000-0000-000000000005', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 5,  CURRENT_DATE - INTERVAL '90 days', 'Continued integration. Confidence growing. Priya proactively took on a stretch project at work.', 'Reflect on what made the stretch project feel possible
+Continue morning routine
+Identify one relationship where you can be more direct'),
+  ('c0000004-0000-0000-0000-000000000006', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 6,  CURRENT_DATE - INTERVAL '75 days', 'Working on future self visualization. Priya described a clear, embodied picture of herself as a team lead.', 'Write a letter from future self
+Take one action this week that "future Priya" would take
+Continue grounding practice'),
+  ('c0000004-0000-0000-0000-000000000007', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 7,  CURRENT_DATE - INTERVAL '60 days', 'Consolidating gains. Priya reports major life decisions with confidence. Negotiated a raise.', 'Celebrate the raise — let it land
+Start thinking about what "graduated" looks like
+Continue daily practices'),
+  ('c0000004-0000-0000-0000-000000000008', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 8,  CURRENT_DATE - INTERVAL '45 days', 'Maintenance session. All indicators positive. Discussed reducing session frequency.', 'Maintain practices independently for 2 weeks
+Journal about what you want from remaining sessions
+Notice if anything feels unfinished'),
+  ('c0000004-0000-0000-0000-000000000009', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 9,  CURRENT_DATE - INTERVAL '21 days', 'Strong session after 3-week gap. Priya is self-sustaining. Practices continued without prompting.', 'Continue independent practice
+Think about what "support" looks like post-graduation
+Identify one personal goal for the next quarter'),
+  ('c0000004-0000-0000-0000-000000000010', 'b2c3d4e5-0000-0000-0000-000000000004', 'a1b2c3d4-0000-0000-0000-000000000001', 10, CURRENT_DATE - INTERVAL '7 days', 'Final check-in. All gains maintained. Priya articulated her growth clearly. Ready for graduation.', 'Reflect on the full journey and write a summary for yourself
+Identify your personal toolkit of practices to keep
+Schedule a 3-month check-in if desired');
 
 -- Priya intake: WHO-5 (raw sum = 12 → score = 12*4 = 48)
 INSERT INTO response (client_id, session_id, questionnaire_type, instrument, question_key, question_text, value) VALUES
@@ -802,56 +778,19 @@ INSERT INTO score (client_id, session_id, questionnaire_type, instrument, compos
 
 -- Priya flags
 INSERT INTO flag (client_id, session_id, flag_type, instrument, severity, rule_key, message, suggested_language, acknowledged, acknowledged_at, acknowledged_by) VALUES
-  -- who5_concern at intake (WHO-5 = 48 < 50)
+  -- Intake: gentle nudge, acknowledged early
   ('b2c3d4e5-0000-0000-0000-000000000004', NULL, 'threshold', 'WHO5', 'amber', 'who5_concern',
-   'Client''s wellbeing score suggests possible emotional difficulties. Consider checking in about their support systems.',
-   'I noticed some of your responses suggest things have been a bit tough lately. I want you to know that''s completely normal, and we''ll work through this together at your pace.',
+   'Energy and mood a bit low at intake. Priya is self-aware about it — good foundation to build on.',
+   'I noticed your energy has been a bit low lately. That''s really common and it''s great that you''re aware of it — we''ll work with that.',
    true, CURRENT_DATE - INTERVAL '135 days', 'Dr. Maya Chen'),
 
-  -- phq4_anxiety at intake (anxiety = 3 >= 3)
-  ('b2c3d4e5-0000-0000-0000-000000000004', NULL, 'threshold', 'PHQ4', 'amber', 'phq4_anxiety',
-   'Client''s responses suggest elevated anxiety. Consider opening a conversation about stress and worry.',
-   'I''d love to spend a little time today exploring what''s been weighing on you. There''s no pressure — we''ll go at whatever pace feels right.',
-   true, CURRENT_DATE - INTERVAL '135 days', 'Dr. Maya Chen'),
-
-  -- ors_distress sessions 1-3 (all < 25)
-  ('b2c3d4e5-0000-0000-0000-000000000004', 'c0000004-0000-0000-0000-000000000001', 'threshold', 'ORS', 'amber', 'ors_distress',
-   'Client is in the distress range. Worth checking in at the start of next session.',
-   NULL, true, CURRENT_DATE - INTERVAL '135 days', 'Dr. Maya Chen'),
-  ('b2c3d4e5-0000-0000-0000-000000000004', 'c0000004-0000-0000-0000-000000000002', 'threshold', 'ORS', 'amber', 'ors_distress',
-   'Client is in the distress range. Worth checking in at the start of next session.',
-   NULL, true, CURRENT_DATE - INTERVAL '120 days', 'Dr. Maya Chen'),
-  ('b2c3d4e5-0000-0000-0000-000000000004', 'c0000004-0000-0000-0000-000000000003', 'threshold', 'ORS', 'amber', 'ors_distress',
-   'Client is in the distress range. Worth checking in at the start of next session.',
-   NULL, true, CURRENT_DATE - INTERVAL '105 days', 'Dr. Maya Chen'),
-
-  -- ors_improvement at session 4 (ORS 24→27 = +3, but need jump ≥5… check: 20→22→24→27, cumulative from session 1 = +7)
-  -- Actually per spec: "sessions where jump ≥5" — session 4: 24→27=+3, session 5: 27→30=+3
-  -- Cumulative from session 1: session 4 has 27-20=+7, session 5 has 30-20=+10
-  -- The spec says ors_improvement green flags at sessions where jump ≥5
-  -- Looking at Sarah's pattern: session 4 had 22→28=+6, that's session-over-session
-  -- For Priya no single session jump is ≥5. But cumulative from first session:
-  -- Session 5: 30-20=10 ≥5 → flag. Session 4: 27-20=7 ≥5 → flag.
-  -- Let's use reliable change (cumulative from baseline): sessions 4, 5 onward
-  ('b2c3d4e5-0000-0000-0000-000000000004', 'c0000004-0000-0000-0000-000000000004', 'trend', 'ORS', 'green', 'ors_improvement',
-   'Reliable improvement detected — client has gained 7+ points from baseline.',
-   NULL, false, NULL, NULL),
+  -- Session 5: steady improvement recognized
   ('b2c3d4e5-0000-0000-0000-000000000004', 'c0000004-0000-0000-0000-000000000005', 'trend', 'ORS', 'green', 'ors_improvement',
-   'Reliable improvement this session.',
+   'Steady upward trend — Priya has gained 10 points from where she started.',
    NULL, false, NULL, NULL),
 
-  -- who5_improvement at session 4 monthly (48→64 = +16 ≥ 10)
-  ('b2c3d4e5-0000-0000-0000-000000000004', 'c0000004-0000-0000-0000-000000000004', 'trend', 'WHO5', 'green', 'who5_improvement',
-   'Client''s wellbeing has improved significantly since intake.',
-   NULL, false, NULL, NULL),
-
-  -- who5_improvement at session 8 monthly (64→80 = +16 ≥ 10)
-  ('b2c3d4e5-0000-0000-0000-000000000004', 'c0000004-0000-0000-0000-000000000008', 'trend', 'WHO5', 'green', 'who5_improvement',
-   'Client''s wellbeing has improved significantly since last month.',
-   NULL, false, NULL, NULL),
-
-  -- graduation_signal at session 10
+  -- Session 10: graduation signal
   ('b2c3d4e5-0000-0000-0000-000000000004', 'c0000004-0000-0000-0000-000000000010', 'trend', 'Cross-instrument', 'green', 'graduation_signal',
-   'Client has maintained wellbeing scores above threshold for 2+ months. All somatic indicators resolved. Consider celebrating progress and discussing transition.',
+   'Priya has been consistently strong for 2+ months. All indicators resolved. Time to celebrate and discuss what comes next.',
    'You''ve made incredible progress — your scores have been consistently strong, and the changes feel grounded in your body too. I think it''s worth celebrating how far you''ve come and talking about what comes next.',
    false, NULL, NULL);

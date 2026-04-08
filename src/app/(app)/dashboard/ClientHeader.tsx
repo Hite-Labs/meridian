@@ -4,6 +4,7 @@ interface ClientHeaderProps {
   name: string;
   status: string;
   modality: string;
+  goal: string | null;
   sessionCount: number;
   startDate: string;
 }
@@ -11,37 +12,47 @@ interface ClientHeaderProps {
 export default function ClientHeader({
   name,
   status,
-  modality,
+  goal,
   sessionCount,
   startDate,
 }: ClientHeaderProps) {
   const statusColors: Record<string, string> = {
-    active: "bg-green-100 text-green-700",
-    graduated: "bg-blue-100 text-blue-700",
-    paused: "bg-gray-100 text-gray-600",
+    graduated: "bg-primary-light text-primary",
+    paused: "bg-base-mid text-text-mid",
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-5 flex flex-wrap items-center gap-4">
-      <h1 className="text-xl font-semibold tracking-tight text-gray-900">{name}</h1>
-      <span
-        className={`px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${statusColors[status] ?? statusColors.active}`}
-      >
-        {status}
-      </span>
-      <div className="hidden sm:flex items-center gap-4 ml-auto text-sm text-gray-500">
-        <span className="capitalize">{modality}</span>
-        <span className="text-gray-300">|</span>
+    <div className="flex flex-wrap items-start gap-x-4 gap-y-1">
+      <div>
+        <div className="flex items-center gap-3">
+          <h1 className="font-display italic text-xl tracking-tight text-text-dark">{name}</h1>
+          {status !== "active" && (
+            <span
+              className={`px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${statusColors[status] ?? "bg-base-mid text-text-mid"}`}
+            >
+              {status}
+            </span>
+          )}
+        </div>
+        {goal && (
+          <p className="text-sm text-text-mid mt-0.5">{goal}</p>
+        )}
+      </div>
+      <div className="hidden sm:flex items-center gap-4 ml-auto text-sm font-light text-text-soft pt-1">
         <span>{sessionCount} sessions</span>
-        <span className="text-gray-300">|</span>
-        <span>
-          Started{" "}
-          {new Date(startDate).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </span>
+        {startDate && (
+          <>
+            <span className="text-text-soft">|</span>
+            <span>
+              Started{" "}
+              {new Date(startDate).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </span>
+          </>
+        )}
       </div>
     </div>
   );

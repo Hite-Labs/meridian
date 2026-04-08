@@ -78,10 +78,12 @@ export function evaluateIntakeFlags(
       flags.push({
         flag_type: "threshold",
         instrument: "WHO5",
-        severity: "red",
+        severity: "amber",
         rule_key: "who5_critical",
         message:
-          "Client's score indicates possible depression. Consider exploring whether a mental health referral is appropriate.",
+          "Energy and mood are running very low. Worth checking in about what support they have outside of coaching.",
+        suggested_language:
+          "I can see things have been really tough lately. I want to make sure you have the support you need — would it be okay to talk about that?",
       });
     } else if (who5 < 50) {
       flags.push({
@@ -90,9 +92,9 @@ export function evaluateIntakeFlags(
         severity: "amber",
         rule_key: "who5_concern",
         message:
-          "Client's wellbeing score suggests possible emotional difficulties. Consider checking in about their support systems.",
+          "Energy and mood are a bit low coming in. Good to keep an eye on this as coaching progresses.",
         suggested_language:
-          "I noticed some of your responses suggest things have been a bit tough lately. I want you to know that's completely normal, and we'll work through this together at your pace.",
+          "I noticed some of your responses suggest things have been a bit tough lately. That's completely normal, and we'll work through this together at your pace.",
       });
     }
   }
@@ -104,19 +106,21 @@ export function evaluateIntakeFlags(
       flags.push({
         flag_type: "threshold",
         instrument: "PHQ4",
-        severity: "red",
+        severity: "amber",
         rule_key: "phq4_anxiety_high",
         message:
-          "Strong anxiety flag. Consider referral to mental health support.",
+          "Stress and worry levels are very high. Worth exploring what's driving this and whether they have support outside coaching.",
+        suggested_language:
+          "Your responses suggest you've been carrying a lot of stress. That's important for us to know — let's make sure we address this together.",
       });
     } else if (anxiety >= 3) {
       flags.push({
         flag_type: "threshold",
         instrument: "PHQ4",
-        severity: "amber",
+        severity: "info",
         rule_key: "phq4_anxiety",
         message:
-          "Client's responses suggest elevated anxiety. Consider opening a conversation about stress and worry.",
+          "Stress levels are a bit elevated. Worth keeping an eye on.",
         suggested_language:
           "I'd love to spend a little time today exploring what's been weighing on you. There's no pressure — we'll go at whatever pace feels right.",
       });
@@ -129,19 +133,19 @@ export function evaluateIntakeFlags(
       flags.push({
         flag_type: "threshold",
         instrument: "PHQ4",
-        severity: "red",
+        severity: "amber",
         rule_key: "phq4_depression_high",
         message:
-          "Strong depression flag. Consider referral to mental health support.",
+          "Mood is running very low. Worth checking in about what support they have and whether coaching alone is enough.",
       });
     } else if (depression >= 3) {
       flags.push({
         flag_type: "threshold",
         instrument: "PHQ4",
-        severity: "amber",
+        severity: "info",
         rule_key: "phq4_depression",
         message:
-          "Client's responses suggest low mood. Consider checking in about how they've been feeling day to day.",
+          "Mood is a bit low. Worth keeping an eye on how this shifts over time.",
       });
     }
   }
@@ -160,10 +164,10 @@ export function evaluateSessionFlags(
     flags.push({
       flag_type: "threshold",
       instrument: "ORS",
-      severity: "amber",
+      severity: "info",
       rule_key: "ors_distress",
       message:
-        "Client is in the distress range. Worth checking in at the start of next session.",
+        "Wellbeing is below their typical range. Worth a gentle check-in.",
     });
   }
 
@@ -176,10 +180,10 @@ export function evaluateSessionFlags(
       flags.push({
         flag_type: "trend",
         instrument: "ORS",
-        severity: "red",
+        severity: "amber",
         rule_key: "ors_deterioration",
         message:
-          "Reliable deterioration detected — change exceeds measurement error.",
+          "Noticeable dip this session. Something may have shifted — worth exploring what happened.",
       });
     }
 
@@ -190,7 +194,7 @@ export function evaluateSessionFlags(
         instrument: "ORS",
         severity: "green",
         rule_key: "ors_improvement",
-        message: "Reliable improvement this session.",
+        message: "Nice jump this session — something clicked.",
       });
     }
   }
@@ -210,9 +214,9 @@ export function evaluateSessionFlags(
         severity: "amber",
         rule_key: "ors_plateau",
         message:
-          "Progress appears to have stalled below the wellbeing threshold. Consider reviewing the coaching approach.",
+          "Scores haven't shifted much over the last few sessions. Might be time to try a different approach.",
         suggested_language:
-          "I want to check in about how you feel things are going. Sometimes it helps to try a different angle — would you be open to exploring that?",
+          "I want to check in about how you feel things are going. Sometimes a different angle can unlock things — would you be open to exploring that?",
       });
     }
   }

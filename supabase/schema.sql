@@ -19,6 +19,7 @@ create table if not exists client (
   email text not null,
   modality text check (modality in ('conscious', 'subconscious', 'both')) not null,
   status text check (status in ('active', 'graduated', 'paused')) default 'active',
+  goal text,
   created_at timestamptz default now()
 );
 
@@ -30,6 +31,7 @@ create table if not exists session (
   session_number integer not null,
   session_date date not null,
   notes text,
+  next_steps text,
   created_at timestamptz default now()
 );
 

@@ -9,6 +9,8 @@ interface QuestionnaireFlowProps {
   onComplete: (responses: Record<string, number | string>) => Promise<void>;
   completionTitle: string;
   completionSubtext: string;
+  title?: string;
+  subtitle?: string;
 }
 
 export default function QuestionnaireFlow({
@@ -16,6 +18,8 @@ export default function QuestionnaireFlow({
   onComplete,
   completionTitle,
   completionSubtext,
+  title,
+  subtitle,
 }: QuestionnaireFlowProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [responses, setResponses] = useState<Record<string, number | string>>(
@@ -69,11 +73,11 @@ export default function QuestionnaireFlow({
 
   if (isComplete) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
+      <div className="min-h-screen bg-base flex flex-col items-center justify-center px-6 text-center">
         <div className="max-w-md">
-          <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
+          <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-6">
             <svg
-              className="w-6 h-6 text-green-600"
+              className="w-6 h-6 text-success"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -86,34 +90,46 @@ export default function QuestionnaireFlow({
               />
             </svg>
           </div>
-          <h1 className="text-2xl font-semibold text-gray-900 mb-3">
+          <h1 className="text-2xl font-display text-text-dark mb-3">
             {completionTitle}
           </h1>
-          <p className="text-gray-500">{completionSubtext}</p>
+          <p className="text-text-mid">{completionSubtext}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen bg-base flex flex-col">
+      {/* Header */}
+      {(title || subtitle) && (
+        <div className="text-center px-6 pt-6 pb-2">
+          {subtitle && (
+            <p className="text-xs font-light text-text-soft uppercase tracking-wide mb-1">{subtitle}</p>
+          )}
+          {title && (
+            <h1 className="text-base font-display text-text-dark">{title}</h1>
+          )}
+        </div>
+      )}
+
       {/* Progress bar */}
-      <div className="h-1 bg-gray-100">
+      <div className="h-1 bg-base-mid">
         <div
-          className="h-full bg-blue-600 transition-all duration-300"
+          className="h-full bg-primary transition-all duration-300"
           style={{ width: `${progress}%` }}
         />
       </div>
 
       {/* Question counter */}
-      <div className="text-center py-4 text-sm text-gray-400">
+      <div className="text-center py-4 text-sm font-light text-text-soft">
         Question {currentIndex + 1} of {totalQuestions}
       </div>
 
       {/* Question area */}
       <div className="flex-1 flex flex-col items-center justify-center px-6">
         <div className="w-full max-w-lg text-center">
-          <h2 className="text-xl sm:text-2xl font-medium text-gray-900 mb-10 leading-relaxed">
+          <h2 className="text-xl sm:text-2xl font-display italic text-text-dark mb-10 leading-relaxed">
             {question.text}
           </h2>
 
@@ -131,13 +147,13 @@ export default function QuestionnaireFlow({
           ) : (
             <div className="w-full max-w-md mx-auto">
               <textarea
-                className="w-full h-32 p-4 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full h-32 p-4 border border-base-mid rounded-lg text-text-dark placeholder-text-soft focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                 placeholder="Share whatever feels right..."
                 value={textValue}
                 onChange={(e) => setTextValue(e.target.value)}
               />
               {question.optional && (
-                <p className="text-sm text-gray-400 mt-2">
+                <p className="text-sm font-light text-text-soft mt-2">
                   This is optional — feel free to skip.
                 </p>
               )}
@@ -153,7 +169,7 @@ export default function QuestionnaireFlow({
             <button
               type="button"
               onClick={handleSkip}
-              className="flex-1 py-4 rounded-xl text-gray-500 font-medium text-base hover:bg-gray-50 transition-colors"
+              className="flex-1 py-4 rounded-xl text-text-soft font-medium text-base hover:bg-base-mid transition-colors"
             >
               Skip
             </button>
@@ -166,8 +182,8 @@ export default function QuestionnaireFlow({
               flex-1 py-4 rounded-xl font-medium text-base transition-all
               ${
                 canProceed && !isSubmitting
-                  ? "bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  ? "bg-accent text-text-dark hover:bg-accent-deep active:scale-[0.98]"
+                  : "bg-base-mid text-text-soft cursor-not-allowed"
               }
             `}
           >

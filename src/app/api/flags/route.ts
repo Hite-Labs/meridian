@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
   ] = await Promise.all([
     supabase
       .from("client")
-      .select("id, name, status, modality")
+      .select("id, name, status, modality, goal")
       .eq("id", clientId)
       .single(),
     supabase
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
 
   // Return all flags (seeded + computed) for the dashboard
   return NextResponse.json({
-    client: client ?? { id: clientId, name: "Unknown", status: "active", modality: "subconscious" },
+    client: client ?? { id: clientId, name: "Unknown", status: "active", modality: "subconscious", goal: null },
     flags: existingFlags ?? [],
     scores: scores ?? [],
     responses: responses ?? [],
