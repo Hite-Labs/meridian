@@ -8,11 +8,10 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ReferenceLine,
-  ReferenceArea,
   ResponsiveContainer,
 } from "recharts";
 import { orsItemLabel } from "@/lib/labels";
+import InfoTip from "@/components/InfoTip";
 
 interface OrsDataPoint {
   sessionNumber: number;
@@ -56,6 +55,8 @@ interface CompositeDataPoint {
   sessionDate: string;
   ors: number;
   who5?: number;
+  /** WHO-5 normalized to the 0-40 ORS scale for visual overlay. */
+  who5Display?: number;
   flags: Array<{ severity: string; message: string; rule_key: string }>;
   isImprovement: boolean;
 }
@@ -109,6 +110,7 @@ export default function TrendChart({
       sessionDate: ors.sessionDate,
       ors: ors.score,
       who5: who5 ? who5.score : undefined,
+      who5Display: who5 ? who5.score / 2.5 : undefined,
       flags: sessionFlags.map((f) => ({
         severity: f.severity,
         message: f.message,
@@ -118,19 +120,28 @@ export default function TrendChart({
     };
   });
 
-  // Add intake WHO-5 as "session 0"
+  // Ensure intake appears as "session 0". If the intake ORS point already
+  // exists (from orsScores), layer the intake WHO-5 onto it; otherwise insert
+  // a WHO-5-only session 0 point.
   const intakeWho5 = who5Scores.find(
     (w) => w.questionnaire_type === "intake"
   );
   if (intakeWho5) {
-    compositeData.unshift({
-      sessionNumber: 0,
-      sessionDate: "",
-      ors: 0,
-      who5: intakeWho5.score,
-      flags: [],
-      isImprovement: false,
-    });
+    const existingIntake = compositeData.find((p) => p.sessionNumber === 0);
+    if (existingIntake) {
+      existingIntake.who5 = intakeWho5.score;
+      existingIntake.who5Display = intakeWho5.score / 2.5;
+    } else {
+      compositeData.unshift({
+        sessionNumber: 0,
+        sessionDate: "",
+        ors: 0,
+        who5: intakeWho5.score,
+        who5Display: intakeWho5.score / 2.5,
+        flags: [],
+        isImprovement: false,
+      });
+    }
   }
 
   // --- Breakdown data ---
@@ -151,23 +162,31 @@ export default function TrendChart({
     };
   });
 
-  // Detect plateau band (consecutive sessions 1-3 that are all in distress)
-  const plateauSessions = compositeData.filter(
-    (d) =>
-      d.sessionNumber >= 1 &&
-      d.sessionNumber <= 3 &&
-      d.ors > 0 &&
-      d.ors < 25
-  );
-  const showPlateau = plateauSessions.length >= 3;
-
   return (
-    <div className="bg-base rounded-2xl border border-base-mid p-6">
+    <div className="card-luxe p-6">
       {/* Header with toggle */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-base font-display tracking-tight text-text-dark">
-          Progress Trend
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-base font-display tracking-tight text-text-dark">
+            Progress Trend
+          </h2>
+          <InfoTip label="About this chart" align="left">
+            <p className="mb-2">
+              <span className="font-medium text-text-dark">Session Wellbeing</span> is the
+              client&apos;s own rating across four parts of life — inner life, close
+              relationships, daily world, and overall — scored out of 40.
+            </p>
+            <p className="mb-2">
+              <span className="font-medium text-text-dark">Monthly Wellbeing</span> (the dashed
+              line) is a broader self-report of energy and mood, taken less often.
+            </p>
+            <p className="text-text-soft">
+              These are conversation starters for coaching, not clinical measures. The numbers
+              help you notice shifts and ask better questions — they don&apos;t diagnose
+              anything.
+            </p>
+          </InfoTip>
+        </div>
         <div className="flex bg-base-mid rounded-lg p-0.5">
           <button
             onClick={() => setView("composite")}
@@ -193,10 +212,7 @@ export default function TrendChart({
       </div>
 
       {view === "composite" ? (
-        <CompositeChart
-          data={compositeData}
-          showPlateau={showPlateau}
-        />
+        <CompositeChart data={compositeData} />
       ) : (
         <BreakdownChart data={breakdownData} />
       )}
@@ -218,12 +234,6 @@ export default function TrendChart({
             />
             Monthly Wellbeing
           </div>
-          {showPlateau && (
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded inline-block border" style={{ backgroundColor: "#F8E8A8", borderColor: "#C49A28" }} />
-              Plateau period
-            </div>
-          )}
         </div>
       ) : (
         <div className="flex flex-wrap items-center gap-x-5 gap-y-1 mt-4 text-xs text-text-soft">
@@ -250,10 +260,8 @@ function formatDateShort(dateStr: string): string {
 
 function CompositeChart({
   data,
-  showPlateau,
 }: {
   data: CompositeDataPoint[];
-  showPlateau: boolean;
 }) {
   return (
     <ResponsiveContainer width="100%" height={320}>
@@ -279,6 +287,8 @@ function CompositeChart({
         <YAxis
           tick={{ fontSize: 12, fill: "#AE9AB8" }}
           domain={[0, 40]}
+          ticks={[0, 10, 20, 30, 40]}
+          allowDataOverflow
         />
         <Tooltip
           content={({ active, payload }) => {
@@ -320,25 +330,9 @@ function CompositeChart({
           }}
         />
 
-        <ReferenceLine
-          y={25}
-          stroke="#C4A8D8"
-          strokeDasharray="6 3"
-          label={{
-            value: "Wellbeing threshold",
-            position: "insideTopRight",
-            fill: "#AE9AB8",
-            fontSize: 11,
-          }}
-        />
-
-        {showPlateau && (
-          <ReferenceArea x1={1} x2={3} fill="#F8E8A8" fillOpacity={0.3} />
-        )}
-
         <Line
           type="monotone"
-          dataKey="who5"
+          dataKey="who5Display"
           stroke="#C49A28"
           strokeWidth={2}
           strokeDasharray="6 3"
@@ -356,8 +350,9 @@ function CompositeChart({
             const { cx, cy, payload } = props;
             if (!cx || !cy || !payload) return <circle key="empty" />;
             const d = payload as CompositeDataPoint;
-            if (d.sessionNumber === 0)
-              return <circle key="intake-hidden" />;
+            // Hide the ORS dot only when there's no ORS value (e.g. intake WHO-5-only point).
+            if (d.ors === 0)
+              return <circle key={`dot-${d.sessionNumber}-empty`} />;
             if (d.isImprovement) {
               return (
                 <g key={`dot-${d.sessionNumber}`}>
@@ -398,9 +393,10 @@ function BreakdownChart({ data }: { data: BreakdownDataPoint[] }) {
           tick={({ x, y, payload }) => {
             const d = data.find((p) => p.sessionNumber === payload.value);
             const date = d?.sessionDate ? formatDateShort(d.sessionDate) : "";
+            const label = payload.value === 0 ? "Intake" : `S${payload.value}`;
             return (
               <g transform={`translate(${x},${y})`}>
-                <text x={0} y={0} dy={14} textAnchor="middle" fill="#7A6080" fontSize={12}>S{payload.value}</text>
+                <text x={0} y={0} dy={14} textAnchor="middle" fill="#7A6080" fontSize={12}>{label}</text>
                 {date && <text x={0} y={0} dy={28} textAnchor="middle" fill="#AE9AB8" fontSize={10}>{date}</text>}
               </g>
             );
@@ -418,7 +414,7 @@ function BreakdownChart({ data }: { data: BreakdownDataPoint[] }) {
             return (
               <div className="bg-base border border-base-mid rounded-lg shadow-lg p-3 text-sm">
                 <div className="font-medium font-display text-text-dark mb-1">
-                  Session {d.sessionNumber}
+                  {d.sessionNumber === 0 ? "Intake" : `Session ${d.sessionNumber}`}
                 </div>
                 {d.sessionDate && (
                   <div className="text-text-soft text-xs mb-2">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import RatingInput from "./RatingInput";
 import type { Question } from "@/lib/questions";
 
@@ -11,6 +12,8 @@ interface QuestionnaireFlowProps {
   completionSubtext: string;
   title?: string;
   subtitle?: string;
+  completionHref?: string;
+  completionCtaLabel?: string;
 }
 
 export default function QuestionnaireFlow({
@@ -20,6 +23,8 @@ export default function QuestionnaireFlow({
   completionSubtext,
   title,
   subtitle,
+  completionHref,
+  completionCtaLabel,
 }: QuestionnaireFlowProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [responses, setResponses] = useState<Record<string, number | string>>(
@@ -73,63 +78,70 @@ export default function QuestionnaireFlow({
 
   if (isComplete) {
     return (
-      <div className="min-h-screen bg-base flex flex-col items-center justify-center px-6 text-center">
-        <div className="max-w-md">
-          <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-6">
+      <div className="min-h-screen canvas-atmosphere flex flex-col items-center justify-center px-6 text-center">
+        <div className="max-w-md rise rise-1">
+          <div className="w-14 h-14 rounded-full bg-accent-light/60 border border-accent/30 flex items-center justify-center mx-auto mb-6 shadow-[0_8px_24px_-12px_rgba(196,154,40,0.6)]">
             <svg
-              className="w-6 h-6 text-success"
+              className="w-6 h-6"
               fill="none"
               viewBox="0 0 24 24"
-              stroke="currentColor"
+              stroke="#7B5B12"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
+              <path d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h1 className="text-2xl font-display text-text-dark mb-3">
+          <div className="eyebrow mb-3">Received</div>
+          <h1 className="text-2xl sm:text-3xl font-display italic text-text-dark mb-3 leading-snug">
             {completionTitle}
           </h1>
-          <p className="text-text-mid">{completionSubtext}</p>
+          <p className="text-text-mid font-light">{completionSubtext}</p>
+          {completionHref && (
+            <Link
+              href={completionHref}
+              className="inline-block mt-8 px-7 py-3.5 rounded-xl font-medium text-base bg-primary-deep text-accent-light hover:bg-primary active:scale-[0.98] transition-all shadow-[0_10px_24px_-14px_rgba(60,24,104,0.7)]"
+            >
+              {completionCtaLabel ?? "Continue"}
+            </Link>
+          )}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-base flex flex-col">
+    <div className="min-h-screen canvas-atmosphere flex flex-col">
       {/* Header */}
       {(title || subtitle) && (
-        <div className="text-center px-6 pt-6 pb-2">
+        <div className="text-center px-6 pt-7 pb-3">
           {subtitle && (
-            <p className="text-xs font-light text-text-soft uppercase tracking-wide mb-1">{subtitle}</p>
+            <p className="eyebrow mb-1.5">{subtitle}</p>
           )}
           {title && (
-            <h1 className="text-base font-display text-text-dark">{title}</h1>
+            <h1 className="text-lg sm:text-xl font-display italic text-text-dark">{title}</h1>
           )}
         </div>
       )}
 
-      {/* Progress bar */}
-      <div className="h-1 bg-base-mid">
+      {/* Progress bar — gold */}
+      <div className="h-[3px] bg-base-mid/70 mx-6 rounded-full overflow-hidden">
         <div
-          className="h-full bg-primary transition-all duration-300"
+          className="h-full bg-accent transition-all duration-500 ease-out rounded-full"
           style={{ width: `${progress}%` }}
         />
       </div>
 
       {/* Question counter */}
-      <div className="text-center py-4 text-sm font-light text-text-soft">
-        Question {currentIndex + 1} of {totalQuestions}
+      <div className="text-center py-4 eyebrow">
+        {currentIndex + 1} of {totalQuestions}
       </div>
 
       {/* Question area */}
       <div className="flex-1 flex flex-col items-center justify-center px-6">
-        <div className="w-full max-w-lg text-center">
-          <h2 className="text-xl sm:text-2xl font-display italic text-text-dark mb-10 leading-relaxed">
+        <div className="w-full max-w-lg text-center rise rise-1" key={currentIndex}>
+          <h2 className="text-2xl sm:text-3xl font-display italic text-text-dark mb-10 leading-[1.25] tracking-tight">
             {question.text}
           </h2>
 
@@ -147,7 +159,7 @@ export default function QuestionnaireFlow({
           ) : (
             <div className="w-full max-w-md mx-auto">
               <textarea
-                className="w-full h-32 p-4 border border-base-mid rounded-lg text-text-dark placeholder-text-soft focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                className="w-full h-32 p-4 bg-[#FAF6F8] border border-base-mid rounded-xl text-text-dark placeholder-text-soft focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/40 resize-none shadow-[0_1px_2px_rgba(60,24,104,0.04)]"
                 placeholder="Share whatever feels right..."
                 value={textValue}
                 onChange={(e) => setTextValue(e.target.value)}
@@ -169,7 +181,7 @@ export default function QuestionnaireFlow({
             <button
               type="button"
               onClick={handleSkip}
-              className="flex-1 py-4 rounded-xl text-text-soft font-medium text-base hover:bg-base-mid transition-colors"
+              className="flex-1 py-4 rounded-xl text-text-soft font-medium text-base hover:bg-base-mid/60 transition-colors"
             >
               Skip
             </button>
@@ -182,7 +194,7 @@ export default function QuestionnaireFlow({
               flex-1 py-4 rounded-xl font-medium text-base transition-all
               ${
                 canProceed && !isSubmitting
-                  ? "bg-accent text-text-dark hover:bg-accent-deep active:scale-[0.98]"
+                  ? "bg-primary-deep text-accent-light hover:bg-primary active:scale-[0.98] shadow-[0_10px_24px_-14px_rgba(60,24,104,0.7)]"
                   : "bg-base-mid text-text-soft cursor-not-allowed"
               }
             `}

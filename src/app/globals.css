@@ -18,3 +18,78 @@
   --color-success: #306D42;
   --color-danger: #B83050;
 }
+
+/* ---------- Atmosphere ---------- */
+/* Soft warm radial behind the canvas + faint grain overlay so the
+   cream surface reads as paper rather than flat beige. */
+.canvas-atmosphere {
+  position: relative;
+  background-color: var(--color-base);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 18% 0%,
+      rgba(196, 154, 40, 0.08) 0%,
+      rgba(196, 154, 40, 0) 60%),
+    radial-gradient(ellipse 70% 50% at 100% 100%,
+      rgba(107, 63, 160, 0.06) 0%,
+      rgba(107, 63, 160, 0) 60%);
+}
+.canvas-atmosphere::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image:
+    radial-gradient(circle at 25% 30%, rgba(60, 24, 104, 0.025) 1px, transparent 1.5px),
+    radial-gradient(circle at 75% 70%, rgba(60, 24, 104, 0.02) 1px, transparent 1.5px);
+  background-size: 22px 22px, 17px 17px;
+}
+
+/* ---------- Card depth ---------- */
+/* Replaces the flat `bg-base rounded-2xl border border-base-mid`
+   pattern. Layered shadow + hairline border for paper-on-paper depth. */
+.card-luxe {
+  background-color: #FAF6F8;
+  border: 1px solid rgba(122, 96, 128, 0.12);
+  border-radius: 1rem;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 1px 2px rgba(60, 24, 104, 0.04),
+    0 12px 28px -16px rgba(60, 24, 104, 0.14);
+}
+
+/* ---------- Decorative gold seam ---------- */
+.gold-seam {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(196, 154, 40, 0.5) 20%,
+    rgba(196, 154, 40, 0.5) 80%,
+    transparent 100%
+  );
+}
+
+/* ---------- Editorial small caps for metadata ---------- */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+
+/* ---------- Hero entrance animation ---------- */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.rise {
+  animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.rise-1 { animation-delay: 0.05s; }
+.rise-2 { animation-delay: 0.18s; }
+.rise-3 { animation-delay: 0.32s; }
+.rise-4 { animation-delay: 0.46s; }
+.rise-5 { animation-delay: 0.6s; }

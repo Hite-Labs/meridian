@@ -35,7 +35,7 @@ export default function AppLayout({
         {/* Mobile top bar — visible below lg */}
         <MobileHeader onMenuToggle={() => setMobileMenuOpen(true)} />
 
-        <main className="flex-1 overflow-y-auto bg-base">{children}</main>
+        <main className="flex-1 overflow-y-auto canvas-atmosphere">{children}</main>
       </div>
     </div>
   );

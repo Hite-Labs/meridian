@@ -4,10 +4,23 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { DEMO_SCENARIOS } from "@/lib/demo";
 import ClientHeader from "./ClientHeader";
+import NextSessionCard from "./NextSessionCard";
 import TrendChart from "./TrendChart";
 import BreakdownPanel from "./BreakdownPanel";
 import FlagPanel from "./FlagPanel";
 import SessionList from "./SessionList";
+
+// Demo: hardcoded next scheduled session. Replaced by calendar integration later.
+const DEMO_NEXT_SESSION_ID = "c0000001-0000-0000-0000-000000000009";
+function demoNextSessionAt(): string {
+  // Tuesday of next week at 14:00 local
+  const d = new Date();
+  const day = d.getDay(); // 0=Sun, 2=Tue
+  const daysUntilTue = ((2 - day + 7) % 7) || 7;
+  d.setDate(d.getDate() + daysUntilTue);
+  d.setHours(14, 0, 0, 0);
+  return d.toISOString();
+}
 
 interface ClientInfo {
   id: string;
@@ -185,10 +198,7 @@ function DashboardInner() {
   const intakePhq4Depression = data.scores.find(
     (s) => s.instrument === "PHQ4_depression" && s.questionnaire_type === "intake"
   );
-  const intakeScaling = data.responses.filter(
-    (r) => r.questionnaire_type === "intake" && r.instrument === "scaling"
-  );
-  const hasIntakeData = !!(intakeWho5 || intakePhq4Anxiety || intakeScaling.length > 0);
+  const hasIntakeData = !!(intakeWho5 || intakePhq4Anxiety || intakePhq4Depression);
   const hasSessions = data.sessions.length > 0;
 
   // Show flag panel if there are any flags at all (concerns or history)
@@ -216,8 +226,8 @@ function DashboardInner() {
             sessions={data.sessions}
           />
 
-          {/* Breakdown + Flags side by side (flags conditional) */}
-          <div className={`grid gap-6 ${hasFlagContent ? "lg:grid-cols-2" : ""}`}>
+          {/* Breakdown + (Flags stacked over Next Session) side by side */}
+          <div className="grid gap-6 lg:grid-cols-2">
             <BreakdownPanel
               latestSubscores={latestSub}
               previousSubscores={prevSub}
@@ -230,12 +240,18 @@ function DashboardInner() {
                 who5: intakeWho5 ? Number(intakeWho5.composite_score) : null,
                 anxiety: intakePhq4Anxiety ? Number(intakePhq4Anxiety.composite_score) : null,
                 depression: intakePhq4Depression ? Number(intakePhq4Depression.composite_score) : null,
-                scaling: Object.fromEntries(intakeScaling.map((r) => [r.question_key, Number(r.value)])),
               } : null}
             />
-            {hasFlagContent && (
-              <FlagPanel flags={data.flags} sessions={data.sessions} />
-            )}
+            <div className="space-y-6">
+              {hasFlagContent && (
+                <FlagPanel flags={data.flags} sessions={data.sessions} />
+              )}
+              <NextSessionCard
+                clientId={data.client.id}
+                scheduledAt={hasSessions ? demoNextSessionAt() : null}
+                nextSessionId={hasSessions ? DEMO_NEXT_SESSION_ID : null}
+              />
+            </div>
           </div>
 
           {/* Session history */}

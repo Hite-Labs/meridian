@@ -55,11 +55,12 @@ export default function SessionList({
   };
 
   return (
-    <div className="bg-base rounded-2xl border border-base-mid shadow-sm">
-      <div className="px-6 py-4 border-b border-base-mid">
-        <h2 className="font-display text-base tracking-tight text-text-dark">Sessions</h2>
+    <div className="card-luxe overflow-hidden">
+      <div className="px-6 py-4 border-b border-base-mid/60">
+        <div className="eyebrow mb-1">History</div>
+        <h2 className="font-display italic text-xl tracking-tight text-text-dark leading-tight">Sessions</h2>
       </div>
-      <div className="divide-y divide-base-mid">
+      <div className="divide-y divide-base-mid/60 py-1">
         {[...sessions].reverse().map((session) => {
           const orsScore = scores.find(
             (s) =>
@@ -144,7 +145,7 @@ export default function SessionList({
               </button>
 
               {isExpanded && (
-                <div className="px-5 pb-4 bg-base-mid text-sm space-y-3">
+                <div className="px-5 pt-3 pb-4 bg-base-mid/60 text-sm space-y-3">
                   {/* ORS breakdown */}
                   {orsResponses.length > 0 && (
                     <div>

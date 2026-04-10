@@ -79,14 +79,6 @@ INSERT INTO response (client_id, session_id, questionnaire_type, instrument, que
   ('b2c3d4e5-0000-0000-0000-000000000001', NULL, 'intake', 'PHQ4', 'phq4_q3', 'Feeling down, depressed, or hopeless?', 1),
   ('b2c3d4e5-0000-0000-0000-000000000001', NULL, 'intake', 'PHQ4', 'phq4_q4', 'Little interest or pleasure in doing things?', 1);
 
--- Scaling intake (0-10 scale)
-INSERT INTO response (client_id, session_id, questionnaire_type, instrument, question_key, question_text, value) VALUES
-  ('b2c3d4e5-0000-0000-0000-000000000001', NULL, 'intake', 'scaling', 'scaling_clarity', 'How clear is the goal you''re bringing to coaching right now?', 6),
-  ('b2c3d4e5-0000-0000-0000-000000000001', NULL, 'intake', 'scaling', 'scaling_motivation', 'How motivated are you to work on this goal?', 8),
-  ('b2c3d4e5-0000-0000-0000-000000000001', NULL, 'intake', 'scaling', 'scaling_readiness', 'How ready are you to make real changes in this area of your life?', 7),
-  ('b2c3d4e5-0000-0000-0000-000000000001', NULL, 'intake', 'scaling', 'scaling_body_safety', 'How safe does your body feel right now?', 3),
-  ('b2c3d4e5-0000-0000-0000-000000000001', NULL, 'intake', 'scaling', 'scaling_body_connection', 'How connected do you feel to your body right now?', 4);
-
 -- ============================================================
 -- Session ORS Responses
 -- Distribute totals: personal + relationships + social + overall
@@ -305,6 +297,13 @@ VALUES (
   'Quit smoking and build healthier habits'
 );
 
+-- Intake ORS responses (0-10 scale, total = 15 → baseline wellbeing on 40-point scale)
+INSERT INTO response (client_id, session_id, questionnaire_type, instrument, question_key, question_text, value) VALUES
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'ORS', 'ors_personal', 'Personally — your inner sense of wellbeing right now.', 3),
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'ORS', 'ors_relationships', 'In your close relationships — family, partner, friends.', 5),
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'ORS', 'ors_social', 'At work, school, or in your social world.', 4),
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'ORS', 'ors_overall', 'Overall — your general sense of how life is going.', 3);
+
 -- Intake WHO-5 responses (raw 0-5 scale, total = 10 → score = 10*4 = 40)
 INSERT INTO response (client_id, session_id, questionnaire_type, instrument, question_key, question_text, value) VALUES
   ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'WHO5', 'who5_q1', 'I have felt cheerful and in good spirits.', 2),
@@ -320,16 +319,9 @@ INSERT INTO response (client_id, session_id, questionnaire_type, instrument, que
   ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4', 'phq4_q3', 'Feeling down, depressed, or hopeless?', 1),
   ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4', 'phq4_q4', 'Little interest or pleasure in doing things?', 0);
 
--- Intake scaling responses
-INSERT INTO response (client_id, session_id, questionnaire_type, instrument, question_key, question_text, value) VALUES
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'scaling', 'scaling_clarity', 'How clear is the goal you''re bringing to coaching right now?', 4),
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'scaling', 'scaling_motivation', 'How motivated are you to work on this goal?', 5),
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'scaling', 'scaling_readiness', 'How ready are you to make real changes in this area of your life?', 4),
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'scaling', 'scaling_body_safety', 'How safe does your body feel right now?', 2),
-  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'scaling', 'scaling_body_connection', 'How connected do you feel to your body right now?', 2);
-
 -- Alex R. scores
 INSERT INTO score (client_id, session_id, questionnaire_type, instrument, composite_score) VALUES
+  ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'ORS', 15),            -- 3+5+4+3 = 15
   ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'WHO5', 40),           -- (2+2+2+2+2)*4 = 40
   ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4_anxiety', 2),     -- 1+1 = 2
   ('b2c3d4e5-0000-0000-0000-000000000002', NULL, 'intake', 'PHQ4_depression', 1),  -- 1+0 = 1
@@ -391,14 +383,6 @@ INSERT INTO response (client_id, session_id, questionnaire_type, instrument, que
   ('b2c3d4e5-0000-0000-0000-000000000003', NULL, 'intake', 'PHQ4', 'phq4_q2', 'Not being able to stop or control worrying?', 2),
   ('b2c3d4e5-0000-0000-0000-000000000003', NULL, 'intake', 'PHQ4', 'phq4_q3', 'Feeling down, depressed, or hopeless?', 1),
   ('b2c3d4e5-0000-0000-0000-000000000003', NULL, 'intake', 'PHQ4', 'phq4_q4', 'Little interest or pleasure in doing things?', 0);
-
--- Jordan intake: Scaling (motivation=9, body_safety=2)
-INSERT INTO response (client_id, session_id, questionnaire_type, instrument, question_key, question_text, value) VALUES
-  ('b2c3d4e5-0000-0000-0000-000000000003', NULL, 'intake', 'scaling', 'scaling_clarity', 'How clear is the goal you''re bringing to coaching right now?', 7),
-  ('b2c3d4e5-0000-0000-0000-000000000003', NULL, 'intake', 'scaling', 'scaling_motivation', 'How motivated are you to work on this goal?', 9),
-  ('b2c3d4e5-0000-0000-0000-000000000003', NULL, 'intake', 'scaling', 'scaling_readiness', 'How ready are you to make real changes in this area of your life?', 8),
-  ('b2c3d4e5-0000-0000-0000-000000000003', NULL, 'intake', 'scaling', 'scaling_body_safety', 'How safe does your body feel right now?', 2),
-  ('b2c3d4e5-0000-0000-0000-000000000003', NULL, 'intake', 'scaling', 'scaling_body_connection', 'How connected do you feel to your body right now?', 3);
 
 -- Jordan ORS responses: 18→19→20→19→20 (flat below 25)
 -- Session 1: ORS = 18 → 4+5+5+4
@@ -575,14 +559,6 @@ INSERT INTO response (client_id, session_id, questionnaire_type, instrument, que
   ('b2c3d4e5-0000-0000-0000-000000000004', NULL, 'intake', 'PHQ4', 'phq4_q2', 'Not being able to stop or control worrying?', 1),
   ('b2c3d4e5-0000-0000-0000-000000000004', NULL, 'intake', 'PHQ4', 'phq4_q3', 'Feeling down, depressed, or hopeless?', 1),
   ('b2c3d4e5-0000-0000-0000-000000000004', NULL, 'intake', 'PHQ4', 'phq4_q4', 'Little interest or pleasure in doing things?', 0);
-
--- Priya intake: Scaling
-INSERT INTO response (client_id, session_id, questionnaire_type, instrument, question_key, question_text, value) VALUES
-  ('b2c3d4e5-0000-0000-0000-000000000004', NULL, 'intake', 'scaling', 'scaling_clarity', 'How clear is the goal you''re bringing to coaching right now?', 5),
-  ('b2c3d4e5-0000-0000-0000-000000000004', NULL, 'intake', 'scaling', 'scaling_motivation', 'How motivated are you to work on this goal?', 7),
-  ('b2c3d4e5-0000-0000-0000-000000000004', NULL, 'intake', 'scaling', 'scaling_readiness', 'How ready are you to make real changes in this area of your life?', 6),
-  ('b2c3d4e5-0000-0000-0000-000000000004', NULL, 'intake', 'scaling', 'scaling_body_safety', 'How safe does your body feel right now?', 3),
-  ('b2c3d4e5-0000-0000-0000-000000000004', NULL, 'intake', 'scaling', 'scaling_body_connection', 'How connected do you feel to your body right now?', 4);
 
 -- Priya ORS responses: 20→22→24→27→30→32→33→34→35→36
 -- Session 1: ORS = 20 → 4+5+6+5

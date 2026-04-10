@@ -1,6 +1,7 @@
 "use client";
 
 import { orsItemLabel } from "@/lib/labels";
+import InfoTip from "@/components/InfoTip";
 
 const subscoreDescriptions: Record<string, string> = {
   personal:
@@ -11,14 +12,6 @@ const subscoreDescriptions: Record<string, string> = {
     "Work, school, and broader social world",
   overall:
     "General sense of how life is going across all areas",
-};
-
-const scalingLabels: Record<string, string> = {
-  scaling_clarity: "Goal Clarity",
-  scaling_motivation: "Motivation",
-  scaling_readiness: "Readiness",
-  scaling_body_safety: "Body Safety",
-  scaling_body_connection: "Body Connection",
 };
 
 const subscoreKeys = ["personal", "relationships", "social", "overall"] as const;
@@ -71,7 +64,6 @@ interface BreakdownPanelProps {
     who5: number | null;
     anxiety: number | null;
     depression: number | null;
-    scaling: Record<string, number>;
   } | null;
 }
 
@@ -88,7 +80,7 @@ export default function BreakdownPanel({
   // State 1: No data at all — awaiting intake
   if (!latestSubscores && !latestComposite && !intakeData) {
     return (
-      <div className="bg-base rounded-2xl border border-base-mid shadow-sm p-6">
+      <div className="card-luxe p-6">
         <div className="text-center py-8">
           <div className="text-text-soft mb-3">
             <svg className="w-10 h-10 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -105,7 +97,7 @@ export default function BreakdownPanel({
   // State 2: Intake data only — no sessions yet
   if (!latestSubscores && !latestComposite && intakeData) {
     return (
-      <div className="bg-base rounded-2xl border border-base-mid shadow-sm">
+      <div className="card-luxe">
         <div className="px-6 py-4 border-b border-base-mid">
           <h2 className="font-display text-base tracking-tight text-text-dark">
             Intake Summary
@@ -147,24 +139,6 @@ export default function BreakdownPanel({
           )}
         </div>
 
-        {Object.keys(intakeData.scaling).length > 0 && (
-          <div className="px-6 py-4 border-t border-base-mid">
-            <div className="text-xs font-light text-text-soft uppercase tracking-wide mb-2">
-              Self-Assessment
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {Object.entries(intakeData.scaling).map(([key, value]) => (
-                <div key={key} className="flex justify-between">
-                  <span className="text-sm text-text-mid">
-                    {scalingLabels[key] ?? key}
-                  </span>
-                  <span className="font-display italic text-sm text-text-dark">{value}/10</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         <div className="px-6 py-4 border-t border-base-mid">
           <p className="text-xs font-light text-text-soft text-center">
             Session wellbeing scores will appear here after the first session.
@@ -189,7 +163,7 @@ export default function BreakdownPanel({
   );
 
   return (
-    <div className="bg-base rounded-2xl border border-base-mid shadow-sm">
+    <div className="card-luxe">
       <div className="px-6 py-4 border-b border-base-mid">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-base tracking-tight text-text-dark">
@@ -216,7 +190,19 @@ export default function BreakdownPanel({
       {/* Composite ORS */}
       <div className="px-6 py-3 border-b border-base-mid">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-text-mid font-medium">Overall Wellbeing</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm text-text-mid font-medium">Overall Wellbeing</span>
+            <InfoTip label="About this score" align="left">
+              <p className="mb-2">
+                The client&apos;s own rating of four parts of life — inner life, close
+                relationships, daily world, and overall — added up to a score out of 40.
+              </p>
+              <p className="text-text-soft">
+                It&apos;s a coaching conversation starter, not a clinical measure. Changes over
+                time matter more than any single number.
+              </p>
+            </InfoTip>
+          </div>
           <div className="flex items-center gap-2">
             <TrendArrow direction={compositeTrend} />
             <span className="font-display italic text-lg tabular-nums text-text-dark">

@@ -5,9 +5,15 @@ import {
   intakeQuestions,
   intakeOpenQuestion,
 } from "@/lib/questions";
-import { DEMO_CLIENT_ID } from "@/lib/demo";
+import { DEMO_SCENARIOS } from "@/lib/demo";
 
 const allQuestions = [...intakeQuestions, intakeOpenQuestion];
+
+// Intake demo flow targets the "Fresh Intake" scenario (Alex R.) so that
+// completing the questionnaire lands the user on a clean client dashboard.
+const FRESH_INTAKE_CLIENT_ID =
+  DEMO_SCENARIOS.find((s) => s.id === "fresh-intake")?.clientId ??
+  DEMO_SCENARIOS[0].clientId;
 
 export default function IntakePage() {
   async function handleComplete(responses: Record<string, number | string>) {
@@ -15,7 +21,7 @@ export default function IntakePage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        clientId: DEMO_CLIENT_ID,
+        clientId: FRESH_INTAKE_CLIENT_ID,
         sessionId: null,
         questionnaireType: "intake",
         responses,
@@ -32,6 +38,8 @@ export default function IntakePage() {
       subtitle="Dr. Maya Chen"
       completionTitle="You're all set. Your practitioner has everything they need to support you."
       completionSubtext="See you at your first session."
+      completionHref={`/client-dashboard?clientId=${FRESH_INTAKE_CLIENT_ID}`}
+      completionCtaLabel="Continue to your dashboard"
     />
   );
 }

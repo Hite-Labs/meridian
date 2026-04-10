@@ -37,17 +37,32 @@ function SidebarInner({ onNavigate }: { onNavigate?: () => void }) {
   }, [switcherOpen]);
 
   return (
-    <aside className="w-60 bg-primary-deep text-white flex flex-col shrink-0">
+    <aside className="w-60 bg-primary-deep text-white flex flex-col shrink-0 relative">
+      {/* Subtle inner light */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none opacity-60"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 30% at 50% 0%, rgba(196,154,40,0.10) 0%, rgba(196,154,40,0) 70%)",
+        }}
+      />
+
       {/* Brand */}
-      <div className="px-5 py-5 flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
+      <div className="relative px-5 pt-6 pb-5 flex items-center gap-3">
+        <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shadow-[0_4px_14px_-6px_rgba(196,154,40,0.7)]">
           <CompassIcon />
         </div>
-        <span className="text-lg font-display italic tracking-tight">Meridian</span>
+        <span className="text-2xl font-display italic tracking-tight leading-none">
+          Meridian
+        </span>
       </div>
 
+      {/* Gold seam */}
+      <div className="relative mx-5 mb-4 gold-seam" />
+
       {/* Client switcher */}
-      <div className="px-3 mb-4" ref={switcherRef}>
+      <div className="relative px-3 mb-4" ref={switcherRef}>
         <button
           onClick={() => setSwitcherOpen(!switcherOpen)}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 transition-colors text-left"
@@ -97,7 +112,7 @@ function SidebarInner({ onNavigate }: { onNavigate?: () => void }) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 space-y-0.5">
+      <nav className="relative flex-1 px-3 space-y-0.5">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -123,7 +138,7 @@ function SidebarInner({ onNavigate }: { onNavigate?: () => void }) {
       </nav>
 
       {/* Bottom */}
-      <div className="px-3 pb-4 pt-2 border-t border-white/10 mt-auto">
+      <div className="relative px-3 pb-4 pt-2 border-t border-white/10 mt-auto">
         <Link
           href="/demo"
           onClick={onNavigate}
@@ -149,7 +164,7 @@ export default function AppSidebar({ onNavigate }: { onNavigate?: () => void } =
 
 function UserIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
       <circle cx="12" cy="7" r="4" />
     </svg>
@@ -158,7 +173,7 @@ function UserIcon() {
 
 function CompassIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="10" />
       <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
     </svg>
@@ -167,7 +182,7 @@ function CompassIcon() {
 
 function BarChartIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
       <line x1="18" y1="20" x2="18" y2="10" />
       <line x1="12" y1="20" x2="12" y2="4" />
       <line x1="6" y1="20" x2="6" y2="14" />
@@ -177,7 +192,7 @@ function BarChartIcon() {
 
 function ClipboardIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
       <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
       <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
     </svg>
@@ -186,7 +201,7 @@ function ClipboardIcon() {
 
 function MessageCircleIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
     </svg>
   );
@@ -194,7 +209,7 @@ function MessageCircleIcon() {
 
 function GridIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="7" height="7" />
       <rect x="14" y="3" width="7" height="7" />
       <rect x="3" y="14" width="7" height="7" />
@@ -207,7 +222,7 @@ function ChevronIcon({ open }: { open: boolean }) {
   return (
     <svg
       width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"
       className={`shrink-0 text-white/40 transition-transform ${open ? "rotate-180" : ""}`}
     >
       <polyline points="6 9 12 15 18 9" />

@@ -38,6 +38,7 @@ export default function FlagPanel({ flags, sessions }: FlagPanelProps) {
     new Set()
   );
   const [showHistory, setShowHistory] = useState(false);
+  const [showAllConcerns, setShowAllConcerns] = useState(false);
 
   const activeFlags = flags
     .filter((f) => !f.acknowledged)
@@ -116,10 +117,18 @@ export default function FlagPanel({ flags, sessions }: FlagPanelProps) {
         </div>
       )}
 
-      {/* Active concerns — clean banner style */}
-      {concerns
-        .filter((f) => f.rule_key !== "graduation_signal")
-        .map((flag) => (
+      {/* Active concerns — clean banner style. Show 1 by default, rest behind "show more". */}
+      {(() => {
+        const visibleConcerns = concerns.filter(
+          (f) => f.rule_key !== "graduation_signal",
+        );
+        const shown = showAllConcerns
+          ? visibleConcerns
+          : visibleConcerns.slice(0, 1);
+        const hiddenCount = visibleConcerns.length - shown.length;
+        return (
+          <>
+            {shown.map((flag) => (
           <div
             key={flag.id}
             className={`p-4 rounded-2xl border shadow-sm ${
@@ -172,17 +181,38 @@ export default function FlagPanel({ flags, sessions }: FlagPanelProps) {
               </div>
             </div>
           </div>
-        ))}
+            ))}
+            {hiddenCount > 0 && (
+              <button
+                type="button"
+                onClick={() => setShowAllConcerns(true)}
+                className="w-full text-left px-4 py-2.5 eyebrow hover:text-text-mid transition-colors"
+              >
+                + Show {hiddenCount} more {hiddenCount === 1 ? "concern" : "concerns"}
+              </button>
+            )}
+            {showAllConcerns && visibleConcerns.length > 1 && (
+              <button
+                type="button"
+                onClick={() => setShowAllConcerns(false)}
+                className="w-full text-left px-4 py-2.5 eyebrow hover:text-text-mid transition-colors"
+              >
+                Show less
+              </button>
+            )}
+          </>
+        );
+      })()}
 
       {/* Flag history — collapsed by default */}
       {historyFlags.length > 0 && (
-        <div className="bg-base rounded-2xl border border-base-mid shadow-sm">
+        <div className="card-luxe overflow-hidden">
           <button
             type="button"
             onClick={() => setShowHistory(!showHistory)}
-            className="w-full px-5 py-3 text-sm text-text-soft hover:bg-base-mid rounded-2xl flex items-center justify-between"
+            className="w-full px-5 py-3.5 text-sm text-text-soft hover:bg-base-mid/40 flex items-center justify-between transition-colors"
           >
-            <span>Flag History ({historyFlags.length})</span>
+            <span className="eyebrow !tracking-[0.16em]">Flag History &middot; {historyFlags.length}</span>
             <svg
               className={`w-4 h-4 transition-transform ${showHistory ? "rotate-180" : ""}`}
               fill="none"

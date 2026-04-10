@@ -8,6 +8,21 @@ export function computeIntakeScores(
 ): ScoreResult[] {
   const scores: ScoreResult[] = [];
 
+  // ORS total (0-40) — baseline wellbeing across four life domains
+  const hasOrs =
+    responses.ors_personal !== undefined ||
+    responses.ors_relationships !== undefined ||
+    responses.ors_social !== undefined ||
+    responses.ors_overall !== undefined;
+  if (hasOrs) {
+    const orsTotal =
+      (responses.ors_personal ?? 0) +
+      (responses.ors_relationships ?? 0) +
+      (responses.ors_social ?? 0) +
+      (responses.ors_overall ?? 0);
+    scores.push({ instrument: "ORS", composite_score: orsTotal });
+  }
+
   // WHO-5: sum × 4
   const who5Sum =
     (responses.who5_q1 ?? 0) +
@@ -159,18 +174,6 @@ export function evaluateSessionFlags(
 ): FlagResult[] {
   const flags: FlagResult[] = [];
 
-  // ORS distress
-  if (orsTotal < 25) {
-    flags.push({
-      flag_type: "threshold",
-      instrument: "ORS",
-      severity: "info",
-      rule_key: "ors_distress",
-      message:
-        "Wellbeing is below their typical range. Worth a gentle check-in.",
-    });
-  }
-
   if (previousOrsTotals.length > 0) {
     const prevOrs = previousOrsTotals[previousOrsTotals.length - 1];
     const change = orsTotal - prevOrs;
@@ -214,9 +217,9 @@ export function evaluateSessionFlags(
         severity: "amber",
         rule_key: "ors_plateau",
         message:
-          "Scores haven't shifted much over the last few sessions. Might be time to try a different approach.",
+          "Wellbeing has stayed low across the last few sessions without much shift. This isn't a clinical judgment — it's a prompt to check in about whether coaching alone is the right fit, or whether something alongside it (a therapist, a doctor) might help.",
         suggested_language:
-          "I want to check in about how you feel things are going. Sometimes a different angle can unlock things — would you be open to exploring that?",
+          "I want to check in about how things are going overall. I notice we've been working on some things and you're still feeling pretty stretched. Sometimes it helps to have support from a few angles at once — how are you feeling about that?",
       });
     }
   }

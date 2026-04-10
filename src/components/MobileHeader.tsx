@@ -6,7 +6,7 @@ export default function MobileHeader({
   onMenuToggle: () => void;
 }) {
   return (
-    <header className="lg:hidden flex items-center gap-3 px-4 py-3 bg-primary-deep text-white shrink-0">
+    <header className="lg:hidden relative flex items-center gap-3 px-4 py-3 bg-primary-deep text-white shrink-0 border-b border-accent/20">
       <button
         type="button"
         onClick={onMenuToggle}
