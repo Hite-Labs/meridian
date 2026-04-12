@@ -9,6 +9,8 @@ import BreakdownPanel from "./BreakdownPanel";
 import FlagPanel from "./FlagPanel";
 import SessionList from "./SessionList";
 import EditClientModal from "@/components/EditClientModal";
+import AddClientModal from "@/components/AddClientModal";
+import ClientList from "./ClientList";
 
 // Demo: hardcoded next scheduled session. Replaced by calendar integration later.
 const DEMO_NEXT_SESSION_ID = "c0000001-0000-0000-0000-000000000009";
@@ -106,6 +108,7 @@ function DashboardInner() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
 
   const fetchData = useCallback(() => {
     if (!clientId) {
@@ -127,12 +130,18 @@ function DashboardInner() {
 
   if (!clientId) {
     return (
-      <div className="flex-1 flex items-center justify-center h-full">
-        <div className="text-center max-w-sm">
-          <h2 className="font-display italic text-2xl text-text-dark mb-2">No client selected</h2>
-          <p className="text-text-mid text-sm">Select a client from the sidebar, or add a new one to get started.</p>
-        </div>
-      </div>
+      <>
+        <ClientList onAddClient={() => setAddModalOpen(true)} />
+        <AddClientModal
+          open={addModalOpen}
+          onClose={() => setAddModalOpen(false)}
+          onCreated={(client) => {
+            setAddModalOpen(false);
+            window.dispatchEvent(new Event("clients-changed"));
+            router.push(`/dashboard?clientId=${client.id}`);
+          }}
+        />
+      </>
     );
   }
 
