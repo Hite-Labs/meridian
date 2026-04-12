@@ -57,7 +57,33 @@ export default function NextSessionCard({
 }: NextSessionCardProps) {
   const isScheduled = scheduledAt !== null && nextSessionId !== null;
   const [inviteConfirm, setInviteConfirm] = useState(false);
+  const [inviteSending, setInviteSending] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);
+  const [inviteError, setInviteError] = useState<string | null>(null);
+
+  async function handleSendIntake() {
+    setInviteSending(true);
+    setInviteError(null);
+    try {
+      const res = await fetch("/api/send-intake", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clientId }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setInviteError(data.error ?? "Failed to send invite");
+        setInviteSending(false);
+        return;
+      }
+      setInviteSending(false);
+      setInviteConfirm(false);
+      setInviteSent(true);
+    } catch {
+      setInviteError("Failed to send invite");
+      setInviteSending(false);
+    }
+  }
   const [checkinConfirm, setCheckinConfirm] = useState(false);
   const [checkinSending, setCheckinSending] = useState(false);
   const [checkinSent, setCheckinSent] = useState(false);
@@ -212,7 +238,7 @@ export default function NextSessionCard({
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
-                Invite ready
+                Invite sent
               </span>
             )}
           </div>
@@ -250,25 +276,21 @@ export default function NextSessionCard({
       {inviteConfirm && (
         <div className="border-t border-base-mid px-5 py-4 bg-base/50">
           <p className="text-sm text-text-mid mb-3">
-            Send intake invitation to <span className="font-medium text-text-dark">{clientName ?? "this client"}</span>?
+            Send intake invitation SMS to <span className="font-medium text-text-dark">{clientName ?? "this client"}</span>?
           </p>
+          {inviteError && (
+            <p className="text-sm text-danger mb-3">{inviteError}</p>
+          )}
           <div className="flex gap-2">
             <button
-              onClick={() => {
-                setInviteConfirm(false);
-                setInviteSent(true);
-                // TODO: wire to /api/clients/send-invite when Twilio is set up
-                setTimeout(() => {
-                  alert("Invite sending is not yet configured. This will send an SMS or email once Twilio is connected.");
-                  setInviteSent(false);
-                }, 300);
-              }}
-              className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary-deep transition-colors"
+              onClick={handleSendIntake}
+              disabled={inviteSending}
+              className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary-deep transition-colors disabled:opacity-50"
             >
-              Send Invite
+              {inviteSending ? "Sending..." : "Send Invite"}
             </button>
             <button
-              onClick={() => setInviteConfirm(false)}
+              onClick={() => { setInviteConfirm(false); setInviteError(null); }}
               className="px-4 py-2 rounded-lg text-sm font-medium text-text-mid hover:text-text-dark hover:bg-base-mid/50 transition-colors"
             >
               Cancel
