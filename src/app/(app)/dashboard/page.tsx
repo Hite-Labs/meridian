@@ -244,44 +244,57 @@ function DashboardInner() {
         />
 
         <div className="space-y-6 mt-6">
-          {/* Full-width chart */}
-          <TrendChart
-            orsScores={orsScores}
-            orsSubscores={orsSubscores}
-            who5Scores={who5Scores}
-            flags={data.flags}
-            sessions={data.sessions}
-          />
-
-          {/* Breakdown + (Flags stacked over Next Session) side by side */}
-          <div className="grid gap-6 lg:grid-cols-2">
-            <BreakdownPanel
-              latestSubscores={latestSub}
-              previousSubscores={prevSub}
-              latestComposite={latestOrs}
-              previousComposite={prevOrs}
-              latestNotes={latestNotes}
-              latestNextSteps={latestNextSteps}
-              bodyMetrics={bodyMetrics}
-              intakeData={!hasSessions && hasIntakeData ? {
-                who5: intakeWho5 ? Number(intakeWho5.composite_score) : null,
-                anxiety: intakePhq4Anxiety ? Number(intakePhq4Anxiety.composite_score) : null,
-                depression: intakePhq4Depression ? Number(intakePhq4Depression.composite_score) : null,
-              } : null}
+          {/* Chart — only show when there are sessions */}
+          {hasSessions && (
+            <TrendChart
+              orsScores={orsScores}
+              orsSubscores={orsSubscores}
+              who5Scores={who5Scores}
+              flags={data.flags}
+              sessions={data.sessions}
             />
-            <div className="space-y-6">
-              {hasFlagContent && (
-                <FlagPanel flags={data.flags} sessions={data.sessions} />
-              )}
-              <NextSessionCard
-                clientId={data.client.id}
-                clientName={data.client.name}
-                scheduledAt={hasSessions ? demoNextSessionAt() : null}
-                nextSessionId={hasSessions ? DEMO_NEXT_SESSION_ID : null}
-                hasIntake={hasIntakeData || hasSessions}
+          )}
+
+          {hasSessions || hasIntakeData ? (
+            /* Breakdown + (Flags stacked over Next Session) side by side */
+            <div className="grid gap-6 lg:grid-cols-2">
+              <BreakdownPanel
+                latestSubscores={latestSub}
+                previousSubscores={prevSub}
+                latestComposite={latestOrs}
+                previousComposite={prevOrs}
+                latestNotes={latestNotes}
+                latestNextSteps={latestNextSteps}
+                bodyMetrics={bodyMetrics}
+                intakeData={!hasSessions && hasIntakeData ? {
+                  who5: intakeWho5 ? Number(intakeWho5.composite_score) : null,
+                  anxiety: intakePhq4Anxiety ? Number(intakePhq4Anxiety.composite_score) : null,
+                  depression: intakePhq4Depression ? Number(intakePhq4Depression.composite_score) : null,
+                } : null}
               />
+              <div className="space-y-6">
+                {hasFlagContent && (
+                  <FlagPanel flags={data.flags} sessions={data.sessions} />
+                )}
+                <NextSessionCard
+                  clientId={data.client.id}
+                  clientName={data.client.name}
+                  scheduledAt={hasSessions ? demoNextSessionAt() : null}
+                  nextSessionId={hasSessions ? DEMO_NEXT_SESSION_ID : null}
+                  hasIntake={hasIntakeData || hasSessions}
+                />
+              </div>
             </div>
-          </div>
+          ) : (
+            /* No data at all — just show NextSessionCard full-width */
+            <NextSessionCard
+              clientId={data.client.id}
+              clientName={data.client.name}
+              scheduledAt={null}
+              nextSessionId={null}
+              hasIntake={false}
+            />
+          )}
 
           {/* Session history */}
           <SessionList

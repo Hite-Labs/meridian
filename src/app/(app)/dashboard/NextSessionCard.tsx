@@ -62,36 +62,23 @@ export default function NextSessionCard({
         className="absolute left-0 top-5 bottom-5 w-[3px] rounded-full bg-accent/80"
       />
 
-      <div className="pl-5 pr-5 py-5 sm:py-6 flex flex-wrap items-center gap-4 sm:gap-6">
-        <div className="flex items-center gap-4 flex-1 min-w-0">
-          <div className="hidden sm:flex w-11 h-11 rounded-full bg-accent-light/60 border border-accent/30 items-center justify-center shrink-0 shadow-[0_6px_16px_-10px_rgba(196,154,40,0.6)]">
-            <CalendarIcon />
+      {isScheduled ? (
+        /* Scheduled state — horizontal layout */
+        <div className="pl-5 pr-5 py-5 sm:py-6 flex flex-wrap items-center gap-4 sm:gap-6">
+          <div className="flex items-center gap-4 flex-1 min-w-0">
+            <div className="hidden sm:flex w-11 h-11 rounded-full bg-accent-light/60 border border-accent/30 items-center justify-center shrink-0 shadow-[0_6px_16px_-10px_rgba(196,154,40,0.6)]">
+              <CalendarIcon />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="eyebrow mb-1">Next Session</div>
+              <div className="font-display italic text-text-dark text-xl sm:text-2xl leading-tight truncate">
+                {formatDate(scheduledAt!)} &middot; {formatTime(scheduledAt!)}
+              </div>
+              <div className="text-xs font-light text-text-soft mt-0.5">
+                {relativeFromNow(scheduledAt!)}
+              </div>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="eyebrow mb-1">Next Session</div>
-            {isScheduled && scheduledAt ? (
-              <>
-                <div className="font-display italic text-text-dark text-xl sm:text-2xl leading-tight truncate">
-                  {formatDate(scheduledAt)} &middot; {formatTime(scheduledAt)}
-                </div>
-                <div className="text-xs font-light text-text-soft mt-0.5">
-                  {relativeFromNow(scheduledAt)}
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="font-display italic text-text-mid text-xl sm:text-2xl leading-tight">
-                  Nothing scheduled.
-                </div>
-                <div className="text-xs font-light text-text-soft mt-0.5">
-                  Send a Calendly link to book their first session.
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-
-        {isScheduled && nextSessionId ? (
           <Link
             href={`/session/${nextSessionId}`}
             className="group inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-primary-deep text-accent-light font-medium text-sm shadow-[0_10px_24px_-14px_rgba(60,24,104,0.7)] hover:bg-primary transition-colors"
@@ -112,8 +99,23 @@ export default function NextSessionCard({
               <polyline points="12 5 19 12 12 19" />
             </svg>
           </Link>
-        ) : (
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+        </div>
+      ) : (
+        /* Unscheduled state — vertical layout: icon, title/subtext, buttons */
+        <div className="px-5 py-6 flex flex-col items-center text-center gap-4">
+          <div className="w-11 h-11 rounded-full bg-accent-light/60 border border-accent/30 flex items-center justify-center shadow-[0_6px_16px_-10px_rgba(196,154,40,0.6)]">
+            <CalendarIcon />
+          </div>
+          <div>
+            <div className="eyebrow mb-1">Next Session</div>
+            <div className="font-display italic text-text-mid text-xl sm:text-2xl leading-tight">
+              Nothing scheduled.
+            </div>
+            <div className="text-xs font-light text-text-soft mt-1">
+              Send a Calendly link to book their first session.
+            </div>
+          </div>
+          <div className="flex flex-row items-center gap-2">
             <button
               type="button"
               className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-primary-deep text-accent-light font-medium text-sm shadow-[0_10px_24px_-14px_rgba(60,24,104,0.7)] hover:bg-primary transition-colors"
@@ -159,8 +161,8 @@ export default function NextSessionCard({
               </span>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Invite confirmation overlay */}
       {inviteConfirm && (
