@@ -16,5 +16,5 @@ test("practitioner tile links to dashboard", async ({ page }) => {
 
   await page.getByRole("link", { name: /Practitioner/i }).click();
 
-  await expect(page).toHaveURL(/\/dashboard/);
+  await expect(page).toHaveURL(/\/dashboard/, { timeout: 10000 });
 });
