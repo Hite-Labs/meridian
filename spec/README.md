@@ -13,7 +13,7 @@ All stories are MVP. Story 10 (Auth + Security) is deliberately deferred to the 
 | 6 | [Transactional Email (Resend)](./story-6-email-resend.md) | not started | MVP |
 | 7 | [Calendly Integration](./story-7-calendly-integration.md) | not started | MVP |
 | 8 | [Client Dashboard](./story-8-client-dashboard.md) | partially built | MVP |
-| 9 | *(reserved for future story)* | — | — |
+| 9 | [Twilio SMS End-to-End Testing](./story-9-twilio-sms-testing.md) | not started | MVP |
 | 10 | [Practitioner Auth + Security Hardening](./story-10-practitioner-auth.md) | not started | MVP |
 
 ## Dependency Order
