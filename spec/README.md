@@ -7,7 +7,7 @@ All stories are MVP. Story 10 (Auth + Security) is deliberately deferred to the 
 |---|-------|--------|----------|
 | 1 | [Create a Client](./story-1-create-client.md) | done | MVP |
 | 2 | [Client Magic Link + Intake](./story-2-client-intake.md) | done | MVP |
-| 3 | [Post-Session Check-In via SMS](./story-3-session-checkin-sms.md) | partially built | MVP |
+| 3 | [Post-Session Check-In via SMS](./story-3-session-checkin-sms.md) | done | MVP |
 | 4 | [Multiple Clients Dashboard](./story-4-multi-client-dashboard.md) | not started | MVP |
 | 5 | [Chart Export](./story-5-chart-export.md) | not started | MVP |
 | 6 | [Transactional Email (Resend)](./story-6-email-resend.md) | not started | MVP |
