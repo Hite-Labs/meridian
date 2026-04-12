@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { DEMO_SCENARIOS } from "@/lib/demo";
+
 import { orsItemLabel } from "@/lib/labels";
 import TrendChart from "../dashboard/TrendChart";
 
@@ -67,7 +67,7 @@ export default function ClientDashboardPage() {
 
 function ClientDashboardInner() {
   const searchParams = useSearchParams();
-  const clientId = searchParams.get("clientId") ?? DEMO_SCENARIOS[0].clientId;
+  const clientId = searchParams.get("clientId") ?? "";
 
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);

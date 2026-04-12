@@ -17,11 +17,26 @@ create table if not exists client (
   practitioner_id uuid references practitioner(id),
   name text not null,
   email text not null,
+  phone text,
   modality text check (modality in ('conscious', 'subconscious', 'both')) not null,
   status text check (status in ('active', 'graduated', 'paused')) default 'active',
   goal text,
   created_at timestamptz default now()
 );
+
+-- Magic link tokens for intake, check-in, milestones
+create table if not exists client_token (
+  id uuid primary key default gen_random_uuid(),
+  client_id uuid references client(id) not null,
+  token uuid default gen_random_uuid() not null unique,
+  token_type text not null check (token_type in ('intake', 'session_checkin', 'milestone')),
+  expires_at timestamptz not null,
+  used_at timestamptz,
+  created_at timestamptz default now()
+);
+
+create index if not exists idx_client_token_token on client_token(token);
+create index if not exists idx_client_token_client_id on client_token(client_id);
 
 -- Sessions
 create table if not exists session (

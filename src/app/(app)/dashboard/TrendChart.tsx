@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import {
   LineChart,
   Line,
@@ -97,6 +99,32 @@ export default function TrendChart({
   sessions,
 }: TrendChartProps) {
   const [view, setView] = useState<ViewMode>("composite");
+  const [exportOpen, setExportOpen] = useState(false);
+  const chartRef = useRef<HTMLDivElement>(null);
+
+  const dateRange = sessions.length > 0
+    ? `${new Date(sessions[0].session_date).toLocaleDateString("en-US", { month: "short", year: "numeric" })} – ${new Date(sessions[sessions.length - 1].session_date).toLocaleDateString("en-US", { month: "short", year: "numeric" })}`
+    : "";
+
+  const handleExport = useCallback(async (format: "png" | "pdf") => {
+    setExportOpen(false);
+    if (!chartRef.current) return;
+    const canvas = await html2canvas(chartRef.current, {
+      backgroundColor: "#FAF6F8",
+      scale: 2,
+    });
+    if (format === "png") {
+      const link = document.createElement("a");
+      link.download = `progress-trend-${dateRange.replace(/\s/g, "-")}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    } else {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [canvas.width / 2, canvas.height / 2] });
+      pdf.addImage(imgData, "PNG", 0, 0, canvas.width / 2, canvas.height / 2);
+      pdf.save(`progress-trend-${dateRange.replace(/\s/g, "-")}.pdf`);
+    }
+  }, [dateRange]);
 
   // --- Composite data ---
   const compositeData: CompositeDataPoint[] = orsScores.map((ors) => {
@@ -163,8 +191,8 @@ export default function TrendChart({
   });
 
   return (
-    <div className="card-luxe p-6">
-      {/* Header with toggle */}
+    <div className="card-luxe p-6" ref={chartRef}>
+      {/* Header with toggle + export */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <h2 className="text-base font-display tracking-tight text-text-dark">
@@ -187,27 +215,56 @@ export default function TrendChart({
             </p>
           </InfoTip>
         </div>
-        <div className="flex bg-base-mid rounded-lg p-0.5">
-          <button
-            onClick={() => setView("composite")}
-            className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${
-              view === "composite"
-                ? "bg-base text-text-dark shadow-sm"
-                : "text-text-soft hover:text-text-mid"
-            }`}
-          >
-            Composite
-          </button>
-          <button
-            onClick={() => setView("breakdown")}
-            className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${
-              view === "breakdown"
-                ? "bg-base text-text-dark shadow-sm"
-                : "text-text-soft hover:text-text-mid"
-            }`}
-          >
-            Breakdown
-          </button>
+        <div className="flex items-center gap-2">
+          <div className="flex bg-base-mid rounded-lg p-0.5">
+            <button
+              onClick={() => setView("composite")}
+              className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${
+                view === "composite"
+                  ? "bg-base text-text-dark shadow-sm"
+                  : "text-text-soft hover:text-text-mid"
+              }`}
+            >
+              Composite
+            </button>
+            <button
+              onClick={() => setView("breakdown")}
+              className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${
+                view === "breakdown"
+                  ? "bg-base text-text-dark shadow-sm"
+                  : "text-text-soft hover:text-text-mid"
+              }`}
+            >
+              Breakdown
+            </button>
+          </div>
+
+          {/* Export dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setExportOpen(!exportOpen)}
+              className="p-1.5 rounded-lg text-text-soft hover:text-text-dark hover:bg-base-mid transition-colors"
+              title="Export chart"
+            >
+              <ExportIcon />
+            </button>
+            {exportOpen && (
+              <div className="absolute right-0 mt-1 w-40 rounded-xl bg-white border border-base-mid shadow-lg py-1 z-10">
+                <button
+                  onClick={() => handleExport("png")}
+                  className="w-full text-left px-3 py-2 text-sm text-text-mid hover:text-text-dark hover:bg-base-mid/50 transition-colors"
+                >
+                  Download PNG
+                </button>
+                <button
+                  onClick={() => handleExport("pdf")}
+                  className="w-full text-left px-3 py-2 text-sm text-text-mid hover:text-text-dark hover:bg-base-mid/50 transition-colors"
+                >
+                  Download PDF
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -460,6 +517,16 @@ function BreakdownChart({ data }: { data: BreakdownDataPoint[] }) {
         ))}
       </LineChart>
     </ResponsiveContainer>
+  );
+}
+
+function ExportIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
   );
 }
 

@@ -2,12 +2,20 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import { useState, useRef, useEffect, Suspense } from "react";
-import { DEMO_SCENARIOS } from "@/lib/demo";
+import { useState, useRef, useEffect, Suspense, useCallback } from "react";
+import AddClientModal from "./AddClientModal";
+
+interface ClientSummary {
+  id: string;
+  name: string;
+  status: string;
+  latestOrs: number | null;
+  activeFlagCount: number;
+}
 
 const navItems = [
-  { label: "Practitioner Dashboard", href: "/dashboard", icon: BarChartIcon },
-  { label: "Client Dashboard", href: "/client-dashboard", icon: UserIcon },
+  { label: "Dashboard", href: "/dashboard", icon: BarChartIcon },
+  { label: "Client View", href: "/client-dashboard", icon: UserIcon },
   { label: "Client Intake", href: "/intake", icon: ClipboardIcon },
   { label: "Session Check-In", href: "/check-in", icon: MessageCircleIcon },
 ];
@@ -17,11 +25,29 @@ function SidebarInner({ onNavigate }: { onNavigate?: () => void }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [switcherOpen, setSwitcherOpen] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
   const switcherRef = useRef<HTMLDivElement>(null);
 
-  const clientId = searchParams.get("clientId") ?? DEMO_SCENARIOS[0].clientId;
-  const currentScenario =
-    DEMO_SCENARIOS.find((s) => s.clientId === clientId) ?? DEMO_SCENARIOS[0];
+  const [clients, setClients] = useState<ClientSummary[]>([]);
+  const [loadingClients, setLoadingClients] = useState(true);
+
+  const fetchClients = useCallback(() => {
+    setLoadingClients(true);
+    fetch("/api/clients")
+      .then((res) => res.json())
+      .then((data) => {
+        setClients(data.clients ?? []);
+        setLoadingClients(false);
+      })
+      .catch(() => setLoadingClients(false));
+  }, []);
+
+  useEffect(() => {
+    fetchClients();
+  }, [fetchClients]);
+
+  const clientId = searchParams.get("clientId") ?? clients[0]?.id ?? "";
+  const currentClient = clients.find((c) => c.id === clientId) ?? clients[0];
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -36,119 +62,164 @@ function SidebarInner({ onNavigate }: { onNavigate?: () => void }) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [switcherOpen]);
 
+  function handleClientCreated(client: { id: string; name: string }) {
+    setAddModalOpen(false);
+    fetchClients();
+    router.push(`/dashboard?clientId=${client.id}`);
+  }
+
   return (
-    <aside className="w-60 bg-primary-deep text-white flex flex-col shrink-0 relative">
-      {/* Subtle inner light */}
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none opacity-60"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 30% at 50% 0%, rgba(196,154,40,0.10) 0%, rgba(196,154,40,0) 70%)",
-        }}
-      />
+    <>
+      <aside className="w-60 bg-primary-deep text-white flex flex-col shrink-0 relative">
+        {/* Subtle inner light */}
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none opacity-60"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 30% at 50% 0%, rgba(196,154,40,0.10) 0%, rgba(196,154,40,0) 70%)",
+          }}
+        />
 
-      {/* Brand */}
-      <div className="relative px-5 pt-6 pb-5 flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shadow-[0_4px_14px_-6px_rgba(196,154,40,0.7)]">
-          <CompassIcon />
+        {/* Brand */}
+        <div className="relative px-5 pt-6 pb-5 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shadow-[0_4px_14px_-6px_rgba(196,154,40,0.7)]">
+            <CompassIcon />
+          </div>
+          <span className="text-2xl font-display italic tracking-tight leading-none">
+            Meridian
+          </span>
         </div>
-        <span className="text-2xl font-display italic tracking-tight leading-none">
-          Meridian
-        </span>
-      </div>
 
-      {/* Gold seam */}
-      <div className="relative mx-5 mb-4 gold-seam" />
+        {/* Gold seam */}
+        <div className="relative mx-5 mb-4 gold-seam" />
 
-      {/* Client switcher */}
-      <div className="relative px-3 mb-4" ref={switcherRef}>
-        <button
-          onClick={() => setSwitcherOpen(!switcherOpen)}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 transition-colors text-left"
-        >
-          <div className="w-8 h-8 rounded-full bg-primary-light/40 flex items-center justify-center text-sm font-medium shrink-0">
-            {currentScenario.name[0]}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium truncate">
-              {currentScenario.name}
+        {/* Client switcher */}
+        <div className="relative px-3 mb-4" ref={switcherRef}>
+          <button
+            onClick={() => setSwitcherOpen(!switcherOpen)}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 transition-colors text-left"
+          >
+            <div className="w-8 h-8 rounded-full bg-primary-light/40 flex items-center justify-center text-sm font-medium shrink-0">
+              {currentClient?.name?.[0] ?? "?"}
             </div>
-            <div className="text-xs text-white/50 truncate">
-              {currentScenario.subtitle}
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium truncate">
+                {loadingClients ? "Loading..." : currentClient?.name ?? "No clients"}
+              </div>
+              {currentClient && (
+                <div className="text-xs text-white/50 truncate capitalize">
+                  {currentClient.status}
+                  {currentClient.activeFlagCount > 0 && (
+                    <span className="ml-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full bg-danger text-[10px] text-white font-bold">
+                      {currentClient.activeFlagCount}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
-          </div>
-          <ChevronIcon open={switcherOpen} />
-        </button>
+            <ChevronIcon open={switcherOpen} />
+          </button>
 
-        {switcherOpen && (
-          <div className="mt-1 rounded-xl bg-primary-deep border border-white/10 overflow-hidden py-1 shadow-lg">
-            {DEMO_SCENARIOS.map((scenario) => (
-              <button
-                key={scenario.id}
-                onClick={() => {
-                  router.push(`/dashboard?clientId=${scenario.clientId}`);
-                  setSwitcherOpen(false);
-                }}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-white/10 transition-colors ${
-                  scenario.clientId === clientId ? "bg-white/10" : ""
+          {switcherOpen && (
+            <div className="mt-1 rounded-xl bg-primary-deep border border-white/10 overflow-hidden py-1 shadow-lg">
+              {clients.map((client) => (
+                <button
+                  key={client.id}
+                  onClick={() => {
+                    router.push(`/dashboard?clientId=${client.id}`);
+                    setSwitcherOpen(false);
+                    onNavigate?.();
+                  }}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-white/10 transition-colors ${
+                    client.id === clientId ? "bg-white/10" : ""
+                  }`}
+                >
+                  <div className="w-7 h-7 rounded-full bg-primary-light/40 flex items-center justify-center text-xs font-medium shrink-0">
+                    {client.name[0]}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium truncate">
+                      {client.name}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {client.activeFlagCount > 0 && (
+                      <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-danger text-[10px] text-white font-bold">
+                        {client.activeFlagCount}
+                      </span>
+                    )}
+                    <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-white/10 text-white/70 capitalize">
+                      {client.status}
+                    </span>
+                  </div>
+                </button>
+              ))}
+
+              {/* Add Client button inside dropdown */}
+              <div className="border-t border-white/10 mt-1 pt-1">
+                <button
+                  onClick={() => {
+                    setSwitcherOpen(false);
+                    setAddModalOpen(true);
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-white/10 transition-colors text-white/70 hover:text-white"
+                >
+                  <div className="w-7 h-7 rounded-full border border-dashed border-white/30 flex items-center justify-center text-xs shrink-0">
+                    <PlusIcon />
+                  </div>
+                  <span className="text-sm font-medium">Add Client</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Nav */}
+        <nav className="relative flex-1 px-3 space-y-0.5">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={
+                  item.href === "/dashboard" || item.href === "/client-dashboard"
+                    ? `${item.href}?clientId=${clientId}`
+                    : item.href
+                }
+                onClick={onNavigate}
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  isActive
+                    ? "bg-primary text-white"
+                    : "text-white/50 hover:text-white hover:bg-white/10"
                 }`}
               >
-                <div className="w-7 h-7 rounded-full bg-primary-light/40 flex items-center justify-center text-xs font-medium shrink-0">
-                  {scenario.name[0]}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium truncate">
-                    {scenario.name}
-                  </div>
-                </div>
-                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full shrink-0 bg-white/10 text-white/70">
-                  {scenario.subtitle}
-                </span>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+                <item.icon />
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
 
-      {/* Nav */}
-      <nav className="relative flex-1 px-3 space-y-0.5">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={
-                item.href === "/dashboard" || item.href === "/client-dashboard"
-                  ? `${item.href}?clientId=${clientId}`
-                  : item.href
-              }
-              onClick={onNavigate}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                isActive
-                  ? "bg-primary text-white"
-                  : "text-white/50 hover:text-white hover:bg-white/10"
-              }`}
-            >
-              <item.icon />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
+        {/* Bottom */}
+        <div className="relative px-3 pb-4 pt-2 border-t border-white/10 mt-auto">
+          <Link
+            href="/demo"
+            onClick={onNavigate}
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <GridIcon />
+            Demo Scenarios
+          </Link>
+        </div>
+      </aside>
 
-      {/* Bottom */}
-      <div className="relative px-3 pb-4 pt-2 border-t border-white/10 mt-auto">
-        <Link
-          href="/demo"
-          onClick={onNavigate}
-          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-white/50 hover:text-white hover:bg-white/10 transition-colors"
-        >
-          <GridIcon />
-          Demo Scenarios
-        </Link>
-      </div>
-    </aside>
+      <AddClientModal
+        open={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        onCreated={handleClientCreated}
+      />
+    </>
   );
 }
 
@@ -161,6 +232,15 @@ export default function AppSidebar({ onNavigate }: { onNavigate?: () => void } =
 }
 
 // --- Inline SVG Icons (16x16) ---
+
+function PlusIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19" />
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  );
+}
 
 function UserIcon() {
   return (

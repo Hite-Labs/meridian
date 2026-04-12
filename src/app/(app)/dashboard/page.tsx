@@ -2,7 +2,6 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { DEMO_SCENARIOS } from "@/lib/demo";
 import ClientHeader from "./ClientHeader";
 import NextSessionCard from "./NextSessionCard";
 import TrendChart from "./TrendChart";
@@ -95,12 +94,16 @@ export default function DashboardPage() {
 
 function DashboardInner() {
   const searchParams = useSearchParams();
-  const clientId = searchParams.get("clientId") ?? DEMO_SCENARIOS[0].clientId;
+  const clientId = searchParams.get("clientId") ?? "";
 
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!clientId) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     fetch(`/api/flags?clientId=${clientId}`)
       .then((res) => res.json())
@@ -109,6 +112,17 @@ function DashboardInner() {
         setLoading(false);
       });
   }, [clientId]);
+
+  if (!clientId) {
+    return (
+      <div className="flex-1 flex items-center justify-center h-full">
+        <div className="text-center max-w-sm">
+          <h2 className="font-display italic text-2xl text-text-dark mb-2">No client selected</h2>
+          <p className="text-text-mid text-sm">Select a client from the sidebar, or add a new one to get started.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading || !data) {
     return (
@@ -248,8 +262,10 @@ function DashboardInner() {
               )}
               <NextSessionCard
                 clientId={data.client.id}
+                clientName={data.client.name}
                 scheduledAt={hasSessions ? demoNextSessionAt() : null}
                 nextSessionId={hasSessions ? DEMO_NEXT_SESSION_ID : null}
+                hasIntake={hasIntakeData || hasSessions}
               />
             </div>
           </div>

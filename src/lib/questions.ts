@@ -23,10 +23,10 @@ export const intakeQuestions: Question[] = [
   { key: "who5_q4", text: "Over the past week, I woke up feeling fresh and rested.", instrument: "WHO5", min: 0, max: 5, minLabel: "At no time", maxLabel: "All of the time", type: "rating" },
   { key: "who5_q5", text: "Over the past week, my daily life has been filled with things that interest me.", instrument: "WHO5", min: 0, max: 5, minLabel: "At no time", maxLabel: "All of the time", type: "rating" },
   // PHQ-4 (0-3)
-  { key: "phq4_q1", text: "Over the past two weeks, how often have you been bothered by feeling nervous, anxious, or on edge?", instrument: "PHQ4", min: 0, max: 3, minLabel: "Not at all", maxLabel: "Nearly every day", type: "rating" },
-  { key: "phq4_q2", text: "Over the past two weeks, how often have you been bothered by not being able to stop or control worrying?", instrument: "PHQ4", min: 0, max: 3, minLabel: "Not at all", maxLabel: "Nearly every day", type: "rating" },
-  { key: "phq4_q3", text: "Over the past two weeks, how often have you been bothered by feeling down, depressed, or hopeless?", instrument: "PHQ4", min: 0, max: 3, minLabel: "Not at all", maxLabel: "Nearly every day", type: "rating" },
-  { key: "phq4_q4", text: "Over the past two weeks, how often have you been bothered by little interest or pleasure in doing things?", instrument: "PHQ4", min: 0, max: 3, minLabel: "Not at all", maxLabel: "Nearly every day", type: "rating" },
+  { key: "phq4_q1", text: "Over the past two weeks, how often have you noticed feeling nervous, anxious, or on edge?", instrument: "PHQ4", min: 0, max: 3, minLabel: "Not at all", maxLabel: "Nearly every day", type: "rating" },
+  { key: "phq4_q2", text: "Over the past two weeks, how often have you noticed that worrying felt hard to stop or control?", instrument: "PHQ4", min: 0, max: 3, minLabel: "Not at all", maxLabel: "Nearly every day", type: "rating" },
+  { key: "phq4_q3", text: "Over the past two weeks, how often have you noticed feeling down, low, or hopeless?", instrument: "PHQ4", min: 0, max: 3, minLabel: "Not at all", maxLabel: "Nearly every day", type: "rating" },
+  { key: "phq4_q4", text: "Over the past two weeks, how often have you noticed a lack of interest or pleasure in doing things?", instrument: "PHQ4", min: 0, max: 3, minLabel: "Not at all", maxLabel: "Nearly every day", type: "rating" },
 ];
 
 export const intakeOpenQuestion: Question = {
