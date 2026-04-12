@@ -7,6 +7,7 @@ interface ClientHeaderProps {
   goal: string | null;
   sessionCount: number;
   startDate: string;
+  onEditClick?: () => void;
 }
 
 export default function ClientHeader({
@@ -15,6 +16,7 @@ export default function ClientHeader({
   goal,
   sessionCount,
   startDate,
+  onEditClick,
 }: ClientHeaderProps) {
   const statusColors: Record<string, string> = {
     graduated: "bg-primary-light text-primary",
@@ -29,6 +31,14 @@ export default function ClientHeader({
           <h1 className="font-display italic tracking-tight text-text-dark text-3xl sm:text-4xl lg:text-5xl leading-[0.95]">
             {name}
           </h1>
+          {onEditClick && (
+            <button
+              onClick={onEditClick}
+              className="px-2.5 py-1 rounded-lg text-xs font-medium text-text-soft hover:text-primary hover:bg-primary-light/50 transition-colors"
+            >
+              Edit
+            </button>
+          )}
           {status !== "active" && (
             <span
               className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium capitalize ${statusColors[status] ?? "bg-base-mid text-text-mid"}`}

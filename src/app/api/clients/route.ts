@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { DEMO_PRACTITIONER_ID } from "@/lib/demo";
+import { createClientSchema } from "@/lib/validations/client";
 
 // List all clients for a practitioner, with latest ORS score + active flag count
 export async function GET() {
@@ -9,8 +10,9 @@ export async function GET() {
 
   const { data: clients, error } = await supabase
     .from("client")
-    .select("id, name, email, phone, modality, status, goal, created_at")
+    .select("id, name, first_name, last_name, email, phone, modality, status, goal, notes, created_at")
     .eq("practitioner_id", practitionerId)
+    .is("archived_at", null)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -67,14 +69,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const { firstName, lastName, email, phone, notes } = body;
+  const parsed = createClientSchema.safeParse(body);
+  if (!parsed.success) {
+    const msg = parsed.error.issues.map((i) => i.message).join(", ");
+    return NextResponse.json({ error: msg }, { status: 400 });
+  }
 
-  if (!firstName?.trim() || !lastName?.trim()) {
-    return NextResponse.json({ error: "First and last name are required" }, { status: 400 });
-  }
-  if (!email?.trim()) {
-    return NextResponse.json({ error: "Email is required" }, { status: 400 });
-  }
+  const { firstName, lastName, email, phone, notes } = parsed.data;
 
   // TODO: replace with authenticated practitioner ID
   const practitionerId = DEMO_PRACTITIONER_ID;
@@ -86,39 +87,43 @@ export async function POST(request: NextRequest) {
     .eq("id", practitionerId)
     .single();
 
-  const name = `${firstName.trim()} ${lastName.trim()}`;
+  const name = `${firstName} ${lastName}`;
 
   const { data: client, error } = await supabase
     .from("client")
     .insert({
       practitioner_id: practitionerId,
       name,
-      email: email.trim(),
-      phone: phone?.trim() || null,
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      phone: phone || null,
       modality: practitioner?.modality ?? "subconscious",
       status: "active",
-      goal: notes?.trim() || null,
+      notes: notes || null,
     })
     .select()
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Client creation failed:", error);
+    return NextResponse.json({ error: "Failed to create client" }, { status: 500 });
   }
 
-  // Generate intake magic link token (48h expiry)
+  // Generate intake magic link token (7-day expiry)
   const { data: token, error: tokenError } = await supabase
     .from("client_token")
     .insert({
       client_id: client.id,
       token_type: "intake",
-      expires_at: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
+      expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     })
     .select("token")
     .single();
 
   if (tokenError) {
-    return NextResponse.json({ error: tokenError.message }, { status: 500 });
+    console.error("Token creation failed:", tokenError);
+    return NextResponse.json({ error: "Failed to generate intake token" }, { status: 500 });
   }
 
   return NextResponse.json({

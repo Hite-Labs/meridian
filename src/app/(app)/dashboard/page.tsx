@@ -1,13 +1,14 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import ClientHeader from "./ClientHeader";
 import NextSessionCard from "./NextSessionCard";
 import TrendChart from "./TrendChart";
 import BreakdownPanel from "./BreakdownPanel";
 import FlagPanel from "./FlagPanel";
 import SessionList from "./SessionList";
+import EditClientModal from "@/components/EditClientModal";
 
 // Demo: hardcoded next scheduled session. Replaced by calendar integration later.
 const DEMO_NEXT_SESSION_ID = "c0000001-0000-0000-0000-000000000009";
@@ -24,9 +25,14 @@ function demoNextSessionAt(): string {
 interface ClientInfo {
   id: string;
   name: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string | null;
   status: string;
   modality: string;
   goal: string | null;
+  notes: string | null;
 }
 
 interface DashboardData {
@@ -94,12 +100,14 @@ export default function DashboardPage() {
 
 function DashboardInner() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const clientId = searchParams.get("clientId") ?? "";
 
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     if (!clientId) {
       setLoading(false);
       return;
@@ -112,6 +120,10 @@ function DashboardInner() {
         setLoading(false);
       });
   }, [clientId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   if (!clientId) {
     return (
@@ -228,6 +240,7 @@ function DashboardInner() {
           goal={data.client.goal}
           sessionCount={data.sessions.length}
           startDate={data.sessions[0]?.session_date ?? ""}
+          onEditClick={() => setEditModalOpen(true)}
         />
 
         <div className="space-y-6 mt-6">
@@ -279,6 +292,20 @@ function DashboardInner() {
           />
         </div>
       </div>
+
+      <EditClientModal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        onUpdated={() => {
+          fetchData();
+          window.dispatchEvent(new Event("clients-changed"));
+        }}
+        onArchived={() => {
+          window.dispatchEvent(new Event("clients-changed"));
+          router.push("/dashboard");
+        }}
+        client={data.client}
+      />
     </div>
   );
 }

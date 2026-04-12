@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
   ] = await Promise.all([
     supabase
       .from("client")
-      .select("id, name, status, modality, goal")
+      .select("id, name, first_name, last_name, email, phone, status, modality, goal, notes")
       .eq("id", clientId)
       .single(),
     supabase

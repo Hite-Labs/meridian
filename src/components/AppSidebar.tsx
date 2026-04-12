@@ -44,6 +44,9 @@ function SidebarInner({ onNavigate }: { onNavigate?: () => void }) {
 
   useEffect(() => {
     fetchClients();
+    const onChanged = () => fetchClients();
+    window.addEventListener("clients-changed", onChanged);
+    return () => window.removeEventListener("clients-changed", onChanged);
   }, [fetchClients]);
 
   const clientId = searchParams.get("clientId") ?? clients[0]?.id ?? "";
