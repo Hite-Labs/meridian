@@ -12,6 +12,8 @@ interface NextSessionCardProps {
   nextSessionId: string | null;
   /** Whether this client has completed intake */
   hasIntake?: boolean;
+  /** Called after a check-in SMS is sent successfully */
+  onCheckinSent?: () => void;
 }
 
 function formatDate(iso: string) {
@@ -46,14 +48,45 @@ function relativeFromNow(iso: string): string {
 }
 
 export default function NextSessionCard({
+  clientId,
   clientName,
   scheduledAt,
   nextSessionId,
   hasIntake = true,
+  onCheckinSent,
 }: NextSessionCardProps) {
   const isScheduled = scheduledAt !== null && nextSessionId !== null;
   const [inviteConfirm, setInviteConfirm] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);
+  const [checkinConfirm, setCheckinConfirm] = useState(false);
+  const [checkinSending, setCheckinSending] = useState(false);
+  const [checkinSent, setCheckinSent] = useState(false);
+  const [checkinError, setCheckinError] = useState<string | null>(null);
+
+  async function handleSendCheckin() {
+    setCheckinSending(true);
+    setCheckinError(null);
+    try {
+      const res = await fetch("/api/send-checkin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clientId }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setCheckinError(data.error ?? "Failed to send check-in");
+        setCheckinSending(false);
+        return;
+      }
+      setCheckinSending(false);
+      setCheckinConfirm(false);
+      setCheckinSent(true);
+      onCheckinSent?.();
+    } catch {
+      setCheckinError("Failed to send check-in");
+      setCheckinSending(false);
+    }
+  }
 
   return (
     <div className="relative card-luxe overflow-hidden">
@@ -79,26 +112,48 @@ export default function NextSessionCard({
               </div>
             </div>
           </div>
-          <Link
-            href={`/session/${nextSessionId}`}
-            className="group inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-primary-deep text-accent-light font-medium text-sm shadow-[0_10px_24px_-14px_rgba(60,24,104,0.7)] hover:bg-primary transition-colors"
-          >
-            Open session notes
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="transition-transform group-hover:translate-x-0.5"
+          <div className="flex items-center gap-2">
+            {hasIntake && !checkinSent && (
+              <button
+                type="button"
+                onClick={() => setCheckinConfirm(true)}
+                className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl border border-primary/30 text-primary font-medium text-sm hover:bg-primary/5 transition-colors"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 2L11 13" /><path d="M22 2L15 22L11 13L2 9L22 2Z" />
+                </svg>
+                Send Check-in
+              </button>
+            )}
+            {checkinSent && (
+              <span className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm text-success font-medium">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Check-in sent
+              </span>
+            )}
+            <Link
+              href={`/session/${nextSessionId}`}
+              className="group inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-primary-deep text-accent-light font-medium text-sm shadow-[0_10px_24px_-14px_rgba(60,24,104,0.7)] hover:bg-primary transition-colors"
             >
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </Link>
+              Open session notes
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="transition-transform group-hover:translate-x-0.5"
+              >
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </Link>
+          </div>
         </div>
       ) : (
         /* Unscheduled state — vertical layout: icon, title/subtext, buttons */
@@ -160,6 +215,33 @@ export default function NextSessionCard({
                 Invite ready
               </span>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Check-in confirmation overlay */}
+      {checkinConfirm && (
+        <div className="border-t border-base-mid px-5 py-4 bg-base/50">
+          <p className="text-sm text-text-mid mb-3">
+            Send session check-in SMS to <span className="font-medium text-text-dark">{clientName ?? "this client"}</span>?
+          </p>
+          {checkinError && (
+            <p className="text-sm text-danger mb-3">{checkinError}</p>
+          )}
+          <div className="flex gap-2">
+            <button
+              onClick={handleSendCheckin}
+              disabled={checkinSending}
+              className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary-deep transition-colors disabled:opacity-50"
+            >
+              {checkinSending ? "Sending..." : "Send Check-in"}
+            </button>
+            <button
+              onClick={() => { setCheckinConfirm(false); setCheckinError(null); }}
+              className="px-4 py-2 rounded-lg text-sm font-medium text-text-mid hover:text-text-dark hover:bg-base-mid/50 transition-colors"
+            >
+              Cancel
+            </button>
           </div>
         </div>
       )}

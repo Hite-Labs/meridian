@@ -49,10 +49,24 @@ export async function GET(request: NextRequest) {
 
   const client = tokenRecord.client as unknown as { id: string; first_name: string; practitioner: { name: string } };
 
+  // For session_checkin tokens, find the most recent session for this client
+  let sessionId: string | null = null;
+  if (tokenRecord.token_type === "session_checkin") {
+    const { data: latestSession } = await supabase
+      .from("session")
+      .select("id")
+      .eq("client_id", tokenRecord.client_id)
+      .order("session_number", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    sessionId = latestSession?.id ?? null;
+  }
+
   return NextResponse.json({
     valid: true,
     clientId: tokenRecord.client_id,
     tokenType: tokenRecord.token_type,
+    sessionId,
     clientFirstName: client?.first_name ?? null,
     practitionerName: client?.practitioner?.name ?? null,
   });
