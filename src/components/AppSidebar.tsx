@@ -186,7 +186,7 @@ function SidebarInner({ onNavigate }: { onNavigate?: () => void }) {
               <Link
                 key={item.href}
                 href={
-                  item.href === "/dashboard" || item.href === "/client-dashboard"
+                  item.href === "/client-dashboard"
                     ? `${item.href}?clientId=${clientId}`
                     : item.href
                 }
