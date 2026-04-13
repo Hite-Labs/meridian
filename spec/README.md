@@ -9,12 +9,15 @@ All stories are MVP. Story 10 (Auth + Security) is deliberately deferred to the 
 | 2 | [Client Magic Link + Intake](./story-2-client-intake.md) | done | MVP |
 | 3 | [Post-Session Check-In via SMS](./story-3-session-checkin-sms.md) | done | MVP |
 | 4 | [Multiple Clients Dashboard](./story-4-multi-client-dashboard.md) | done | MVP |
-| 5 | [Chart Export](./story-5-chart-export.md) | not started | MVP |
+| 5 | [Chart Export](./story-5-chart-export.md) | done | MVP |
 | 6 | [Transactional Email (Resend)](./story-6-email-resend.md) | not started | MVP |
 | 7 | [Calendly Integration](./story-7-calendly-integration.md) | not started | MVP |
 | 8 | [Client Dashboard](./story-8-client-dashboard.md) | partially built | MVP |
 | 9 | [Twilio SMS End-to-End Testing](./story-9-twilio-sms-testing.md) | not started | MVP |
 | 10 | [Practitioner Auth + Security Hardening](./story-10-practitioner-auth.md) | not started | MVP |
+| 11 | [Practitioner Profile & Account Management](./story-11-practitioner-profile.md) | not started | MVP |
+| 12 | [Admin Panel](./story-12-admin-panel.md) | not started | MVP |
+| 13 | [Account Switcher](./story-13-account-switcher.md) | not started | MVP |
 
 ## Dependency Order
 
